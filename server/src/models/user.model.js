@@ -63,5 +63,10 @@ userModel.pre("save", async function (next) {
   next();
 });
 
-const User = mongoose.model("User", userModel);
-module.exports = User;
+userModel.method.isPasswordCorret = async function (password) {
+  return await bcrypt.compare(password, this.password);
+  
+}
+
+export const User = mongoose.model("User", userModel);
+ 
