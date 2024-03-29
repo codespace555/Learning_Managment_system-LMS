@@ -6,7 +6,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 const options = {
   httpOnly: true,
   secure: true,
-}
+};
 
 const generateAccessAndRefreshToken = async (userId) => {
   try {
@@ -36,14 +36,18 @@ const register = asyncHandler(async (req, res) => {
     throw new ApiError(400, "User Already Exists");
   }
 
-  const user = await User.create({ fullName, email, password,avatar:{
-    public_id: email,
-    secure_url: `https://api.adorable.io/avatars/285/${email}`
-  } });
+  const user = await User.create({
+    fullName,
+    email,
+    password,
+    avatar: {
+      public_id: email,
+      secure_url: `https://api.adorable.io/avatars/285/${email}`,
+    },
+  });
 
   const createUser = await User.findById(user._id).select(
-    "-password -refreshToken -forgotPasswordToken -forgotPasswordExpiry",
-    
+    "-password -refreshToken -forgotPasswordToken -forgotPasswordExpiry"
   );
 
   if (!createUser) {
@@ -54,47 +58,63 @@ const register = asyncHandler(async (req, res) => {
 
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-if(!email && ! password){
-  throw new ApiError(400, "All Field Required");
-}
+  if (!email && !password) {
+    throw new ApiError(400, "All Field Required");
+  }
 
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new ApiError(401, "Invalid Credentials");
+  }
+  const isPasswordValid = await user.isPasswordCorret(password);
+  if (!isPasswordValid) {
+    throw new ApiError(401, "Invalid Credentials");
+  }
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+    user._id
+  );
+  const loggedInUser = await User.findById(user._id).select(
+    "-password -refreshToken"
+  );
 
-const user = await User.findOne({ email });
-if(!user){
-  throw new ApiError(401, "Invalid Credentials");
-}
-const isPasswordValid = await user.isPasswordCorret(password);
-if (!isPasswordValid) {
-  throw new ApiError(401, "Invalid Credentials");
-}
-const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
-  user._id,
-);
-const loggedInUser = await User.findById(user._id).select(
-  "-password -refreshToken",
-);
-
-return res
-.status(200)
-.cookie("accessToken", accessToken, options)
-.cookie("refreshToken", refreshToken, options)
-.json(
-  new ApiResponse(
-    200,
-    {
-      user: loggedInUser,
-      accessToken,
-      refreshToken,
-    },
-    "Logged In Successfully",
-  ),
-);
- 
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: loggedInUser,
+          accessToken,
+          refreshToken,
+        },
+        "Logged In Successfully"
+      )
+    );
 });
 
-const logout = (req, res) => {
-  // code to remove the users auth token from the server
-};
+const logout = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $unset: {
+        refreshToken: 1, 
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+ 
+
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged Out"));
+});
 
 const getProfile = (req, res) => {
   //get profile info for logged in user
