@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import bcrypt from "bcryptjs"
+import bcrypt from "bcryptjs";
 
 const userModel = new Schema(
   {
@@ -22,7 +22,7 @@ const userModel = new Schema(
       minLength: 8,
       required: true,
     },
-   
+
     avatar: {
       public_id: {
         type: String,
@@ -47,38 +47,21 @@ const userModel = new Schema(
   }
 );
 
-
 // Encrypting the Password using Bcrypt
 userModel.pre("save", async function (next) {
-
-  const user = this
+  const user = this;
   if (!user.isModified("password")) return next();
-try {
-  
-} catch (error) {
-  
-}
+  try {
+    user.password = await bcrypt.hash(user.password, 10);
 
+    next();
+  } catch (error) {
+    console.log("Error in User Model", error);
+    next(error);
+  }
 
-  next()
-  
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  next();
+});
 
 const User = mongoose.model("User", userModel);
 module.exports = User;
