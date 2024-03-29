@@ -47,7 +47,7 @@ const register = asyncHandler(async (req, res) => {
   });
 
   const createUser = await User.findById(user._id).select(
-    "-password -refreshToken -forgotPasswordToken -forgotPasswordExpiry"
+    "-password -refreshToken"
   );
 
   if (!createUser) {
@@ -116,8 +116,18 @@ const logout = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "User logged Out"));
 });
 
-const getProfile = (req, res) => {
-  //get profile info for logged in user
-};
+const getProfile = asyncHandler(async (req, res) => {
+
+ 
+  return res
+    .status(200)
+    .json(new ApiResponse(
+        200,
+        req.user,
+        "User fetched successfully"
+    ))
+
+}
+)
 
 export { register, login, logout, getProfile };
