@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors"
 import cookieParser from "cookie-parser";
-
+import morgan from 'morgan';
 const app = express();
 
 app.use(
@@ -14,6 +14,7 @@ const limit = "1mb";
 app.use(express.json({ limit: limit }));
 app.use(express.urlencoded({ extended: true, limit: limit }));
 app.use(express.static("public"));
+app.use(morgan('start'));
 app.use(cookieParser());
 
 import userRouts from "./routes/user.routes.js"
