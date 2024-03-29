@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import bcrypt from "bcryptjs"
 
 const userModel = new Schema(
   {
@@ -45,6 +46,39 @@ const userModel = new Schema(
     timestamps: true, // Saves createdAt and updatedAt
   }
 );
+
+
+// Encrypting the Password using Bcrypt
+userModel.pre("save", async function (next) {
+
+  const user = this
+  if (!user.isModified("password")) return next();
+try {
+  
+} catch (error) {
+  
+}
+
+
+  next()
+  
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const User = mongoose.model("User", userModel);
 module.exports = User;
