@@ -1,14 +1,26 @@
 import { Router } from "express";
-import { register,login,logout ,getProfile} from "../controllers/user.controller.js";
+import {
+  register,
+  login,
+  logout,
+  getProfile,
+  updateUserAvatar,
+} from "../controllers/user.controller.js";
 import { isLoggedIn } from "../middlewares/auth.middlewares.js";
+import upload from "../middlewares/multer.middleware.js";
 
+const router = Router();
 
-const router = Router()
+router.route("/register").post(
+  upload.fields([{ name: "avatar", maxCount: 1 }]),
 
-router.route('/register').post(register)
+  register
+);
 router.route("/login").post(login);
-router.route( "/logout" ).get( isLoggedIn,logout );
-router.route("/profile").get(isLoggedIn,getProfile)
+router.route("/logout").get(isLoggedIn, logout);
+router.route("/profile").get(isLoggedIn, getProfile);
+router
+  .route("/update-avatar")
+  .patch(isLoggedIn, upload.single("avatar"), updateUserAvatar);
 
-
-export default router
+export default router;

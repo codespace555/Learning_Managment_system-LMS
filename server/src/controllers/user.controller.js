@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { fileDelete, uploadOncloudinary } from "../utils/cloudinary.js";
 
 const options = {
   httpOnly: true,
@@ -36,13 +37,19 @@ const register = asyncHandler(async (req, res) => {
     throw new ApiError(400, "User Already Exists");
   }
 
+  const avatarLocalPath = await req.files?.avatar[0].path;
+  const avatar = await uploadOncloudinary(avatarLocalPath);
+  if (!avatarLocalPath) {
+    throw new ApiError(400, "Avatar file is required");
+  }
+
   const user = await User.create({
     fullName,
     email,
     password,
     avatar: {
-      public_id: email,
-      secure_url: `https://api.adorable.io/avatars/285/${email}`,
+      public_id: avatar.public_id,
+      secure_url: avatar.url,
     },
   });
 
@@ -99,15 +106,13 @@ const logout = asyncHandler(async (req, res) => {
     req.user._id,
     {
       $unset: {
-        refreshToken: 1, 
+        refreshToken: 1,
       },
     },
     {
       new: true,
     }
   );
-
- 
 
   return res
     .status(200)
@@ -117,17 +122,47 @@ const logout = asyncHandler(async (req, res) => {
 });
 
 const getProfile = asyncHandler(async (req, res) => {
-
- 
   return res
     .status(200)
-    .json(new ApiResponse(
-        200,
-        req.user,
-        "User fetched successfully"
-    ))
+    .json(new ApiResponse(200, req.user, "User fetched successfully"));
+});
 
-}
-)
+const updateUserAvatar = asyncHandler(async (req, res) => {
+  const avatarLocalPath = req.file?.path;
+  if (!avatarLocalPath) {
+    throw new ApiError(400, "No image provided");
+  }
+  const user = req.user;
 
-export { register, login, logout, getProfile };
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+
+  fileDelete(user.avatar.public_id); //delete old file from server folder
+
+  const avatar = await uploadOncloudinary(avatarLocalPath);
+
+  if (!avatar) {
+    throw new ApiError(400, "No image path get");
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        avatar: {
+          public_id: avatar.public_id,
+          secure_url: avatar.url,
+        },
+      },
+    },
+    { new: true }
+  ).select("-password");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedUser, "Avatar image updated successfully"));
+});
+
+export { register, login, logout, getProfile, updateUserAvatar };
