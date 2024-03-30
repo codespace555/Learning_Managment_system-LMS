@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import cryptoJS from "crypto-js";
 
 const userModel = new Schema(
   {
@@ -30,6 +31,7 @@ const userModel = new Schema(
       secure_url: {
         type: String,
       },
+      require: [true, "Avatar field cannot be empty"],
     },
     role: {
       type: String,
@@ -94,5 +96,17 @@ userModel.methods.generateRefreshToken = function () {
       expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
     }
   );
+};
+
+userModel.methods.getResetPasswordToken = function () {
+  const ciphertext = CryptoJS.AES.encrypt(
+    "cryptedtoken",
+    process.env.REFRESH_TOKEN_SECRET
+  ).toString();
+
+  this.forgotPasswordToken = ciphertext
+  this.forgotPasswordExpiry = Date.now() + 15*60*1000; // 15 minutes
+
+  return ciphertext;
 };
 export const User = mongoose.model("User", userModel);

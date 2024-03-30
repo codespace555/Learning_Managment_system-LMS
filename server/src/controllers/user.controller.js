@@ -165,4 +165,36 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, updatedUser, "Avatar image updated successfully"));
 });
 
-export { register, login, logout, getProfile, updateUserAvatar };
+
+const forgotPassword = asyncHandler(async(req,res) => {
+  const {email} = req.body
+  if(!email){
+    throw new ApiError(400,"Please provide an email address")
+  }
+  const user = await User.findOne({email})
+  if(!user){
+    throw new  ApiError(404,'Email does not exist')
+  }
+  const resetToken = await user.getResetPasswordToken()
+if(!resetToken){
+  throw  new ApiError(400, "something wents wrong to gen reset Token")
+}
+
+await user.save({validateBeforeSave : false})
+
+const resetPasswordUrl = `${ process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+const subject = 'Reset Password';
+const message = `You can reset your password by clicking <a href=${resetPasswordUrl} target="_blank">Reset your password</a>\nIf the above link does not work for some reason then copy paste this link in new tab ${resetPasswordUrl}.\n If you have not requested this, kindly ignore.`;
+
+// try {
+//   await
+  
+// } catch (error) {
+  
+// }
+
+})
+
+const resetPassword = asyncHandler()
+
+export { register, login, logout, getProfile, updateUserAvatar, forgotPassword , resetPassword};
