@@ -26,6 +26,6 @@ router
   .patch(isLoggedIn, upload.single("avatar"), updateUserAvatar);
 
 router.route("/reset").post(forgotPassword);
-router.route("/reset/:restToken").post(resetPassword);
+router.route("/reset-password/:resetToken").post(resetPassword);
 
 export default router;

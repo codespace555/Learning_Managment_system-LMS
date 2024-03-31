@@ -3,6 +3,9 @@ import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { fileDelete, uploadOncloudinary } from "../utils/cloudinary.js";
+import sendEmail from "../utils/sendEmail.js";
+import Cryptr from "cryptr";
+import bcrypt from "bcryptjs";
 
 const options = {
   httpOnly: true,
@@ -138,63 +141,184 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
+  try {
+    // If user has an existing avatar, delete it from Cloudinary
+    if (user.avatar && user.avatar.public_id) {
+      await fileDelete(user.avatar.public_id);
+    }
 
-  fileDelete(user.avatar.public_id); //delete old file from server folder
+    // Upload new avatar to Cloudinary
+    const avatar = await uploadOncloudinary(avatarLocalPath);
+    if (!avatar) {
+      throw new ApiError(400, "Failed to upload avatar image");
+    }
 
-  const avatar = await uploadOncloudinary(avatarLocalPath);
+    // Update user document with new avatar details
+    const updatedUser = await User.findByIdAndUpdate(
+      user._id,
+      {
+        $set: {
+          "avatar.public_id": avatar.public_id,
+          "avatar.secure_url": avatar.url,
+        },
+      },
+      { new: true, select: "-password" }
+    );
 
-  if (!avatar) {
-    throw new ApiError(400, "No image path get");
+    // Send success response with updated user
+    res.status(200).json({
+      status: "success",
+      data: updatedUser,
+      message: "Avatar image updated successfully",
+    });
+  } catch (error) {
+    // Handle any errors
+    console.error("Error updating avatar:", error);
+    throw new ApiError(500, "Internal server error");
+  }
+});
+
+const forgotPassword = asyncHandler(async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      throw new ApiError(400, "Please provide an email address");
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new ApiError(404, "Email does not exist");
+    }
+    const resetToken = await user.getResetPasswordToken();
+    if (!resetToken) {
+      throw new ApiError(400, "something wents wrong to gen reset Token");
+    }
+
+    await user.save({ validateBeforeSave: false });
+
+    const resetPasswordUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    const subject = "Reset Password";
+    const message = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset</title>
+    <style>
+      /* Global styles */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+        color: #444;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #007bff;
+        text-align: center;
+      }
+      p {
+        margin-bottom: 20px;
+      }
+      a {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #000;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+    </style>
+    </head>
+    <body>
+    
+    <div class="container">
+      <h1>Password Reset</h1>
+      <p>Dear User,</p>
+      <p>You recently requested to reset your password. If you did not make this request, please ignore this email.</p>
+      <p>To reset your password, please click the following button:</p>
+      <p style="text-align: center;"><a href="${resetPasswordUrl}" target="_blank">Reset Your Password</a></p>
+      <p>If you're unable to click the button above, please copy and paste the following URL into your browser:</p>
+      <p style="text-align: center;">${resetPasswordUrl}</p>
+      <p>Thank you,</p>
+      <p>LearnifTeach</p>
+    </div>
+    
+    </body>
+    </html>`;
+
+    console.log(resetPasswordUrl);
+
+    sendEmail(email, subject, message);
+
+    res
+      .status(200)
+      .json(
+        new ApiResponse(200, resetPasswordUrl,`Email has been sent to ${email} successfully`)
+      );
+  } catch (error) {
+    console.log("error");
+    throw new ApiError(500, error);
+  }
+});
+const resetPassword = asyncHandler(async (req, res) => {
+  const { resetToken } = req.params;
+  const { password } = req.body;
+
+
+  const cryptr = new Cryptr(process.env.REFRESH_TOKEN_SECRET);
+  const decryptedString = cryptr.decrypt(resetToken);
+  console.log(decryptedString);
+
+  if (!password) {
+    throw new ApiError(400, "Password is required");
+  }
+
+  const user = await User.findOne({
+    forgotPasswordToken:  decryptedString,
+    forgotPasswordExpiry: { $gt: Date.now() },
+   
+  });
+
+
+  if (!user) {
+    throw new ApiError(404, "Token is invalid or expired, please try again");
   }
 
   const updatedUser = await User.findByIdAndUpdate(
-    req.user?._id,
+    user._id,
     {
       $set: {
-        avatar: {
-          public_id: avatar.public_id,
-          secure_url: avatar.url,
-        },
+        password: await bcrypt.hash(password, 10),
+      },
+      $unset: {
+        forgotPasswordToken: 1,
+        forgotPasswordExpiry: 1,
       },
     },
-    { new: true }
-  ).select("-password");
+    { new: true, select: "-password" }
+  );
 
-  return res
-    .status(200)
-    .json(new ApiResponse(200, updatedUser, "Avatar image updated successfully"));
+  res.status(200).json(new ApiResponse(200,updatedUser ,"Successfully changed password"));
 });
 
 
-const forgotPassword = asyncHandler(async(req,res) => {
-  const {email} = req.body
-  if(!email){
-    throw new ApiError(400,"Please provide an email address")
-  }
-  const user = await User.findOne({email})
-  if(!user){
-    throw new  ApiError(404,'Email does not exist')
-  }
-  const resetToken = await user.getResetPasswordToken()
-if(!resetToken){
-  throw  new ApiError(400, "something wents wrong to gen reset Token")
-}
-
-await user.save({validateBeforeSave : false})
-
-const resetPasswordUrl = `${ process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-const subject = 'Reset Password';
-const message = `You can reset your password by clicking <a href=${resetPasswordUrl} target="_blank">Reset your password</a>\nIf the above link does not work for some reason then copy paste this link in new tab ${resetPasswordUrl}.\n If you have not requested this, kindly ignore.`;
-
-// try {
-//   await
-  
-// } catch (error) {
-  
-// }
-
-})
-
-const resetPassword = asyncHandler()
-
-export { register, login, logout, getProfile, updateUserAvatar, forgotPassword , resetPassword};
+export {
+  register,
+  login,
+  logout,
+  getProfile,
+  updateUserAvatar,
+  forgotPassword,
+  resetPassword,
+};
