@@ -22,6 +22,11 @@ import userRouts from "./routes/user.routes.js"
 app.use("/api/v1/users",userRouts)
 
 
+import courseRouts from "./routes/course.routes.js"
+
+app.use("/api/v1/course",courseRouts)
+
+
 
 
 

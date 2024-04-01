@@ -24,7 +24,10 @@ const userModel = new Schema(
       minLength: 8,
       required: true,
     },
-
+    subscription: {
+      id: String,
+      status: String,
+    },
     avatar: {
       
       public_id: {

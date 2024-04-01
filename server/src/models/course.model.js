@@ -33,6 +33,14 @@ const courseSchema = new Schema(
             required: true,
           },
         },
+        lecturesThumbnail: {
+          public_id: {
+            type: String,
+          },
+          secure_url: {
+            type: String,
+          },
+        },
       },
     ],
     thumbnail: {
