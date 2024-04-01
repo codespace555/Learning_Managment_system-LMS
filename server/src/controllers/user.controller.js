@@ -27,7 +27,8 @@ const generateAccessAndRefreshToken = async (userId) => {
   }
 };
 
-// register user
+//register..........................................................................
+
 const register = asyncHandler(async (req, res) => {
   const { fullName, email, password } = req.body;
 
@@ -41,7 +42,7 @@ const register = asyncHandler(async (req, res) => {
   }
 
   const avatarLocalPath = await req.files?.avatar[0].path;
-  const avatar = await uploadOncloudinary(avatarLocalPath);
+  const avatar = await uploadOncloudinary(avatarLocalPath,"LMS_avatar");
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar file is required");
   }
@@ -65,6 +66,7 @@ const register = asyncHandler(async (req, res) => {
   }
   res.status(200).json(new ApiResponse(200, user, "User create Sucessfully"));
 });
+//login ..........................................................................
 
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -103,6 +105,7 @@ const login = asyncHandler(async (req, res) => {
       )
     );
 });
+//logout..........................................................................
 
 const logout = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
@@ -130,6 +133,7 @@ const getProfile = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, req.user, "User fetched successfully"));
 });
 
+//updateUserAvatar..........................................................................
 const updateUserAvatar = asyncHandler(async (req, res) => {
   const avatarLocalPath = req.file?.path;
   if (!avatarLocalPath) {
@@ -144,11 +148,11 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
   try {
     // If user has an existing avatar, delete it from Cloudinary
     if (user.avatar && user.avatar.public_id) {
-      await fileDelete(user.avatar.public_id);
+      await fileDelete(user.avatar.public_id); 
     }
 
     // Upload new avatar to Cloudinary
-    const avatar = await uploadOncloudinary(avatarLocalPath);
+    const avatar = await uploadOncloudinary(avatarLocalPath,"LMS_avatar");
     if (!avatar) {
       throw new ApiError(400, "Failed to upload avatar image");
     }
@@ -177,6 +181,8 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Internal server error");
   }
 });
+
+// forgotPassword......................................................................
 
 const forgotPassword = asyncHandler(async (req, res) => {
   try {
@@ -264,17 +270,22 @@ const forgotPassword = asyncHandler(async (req, res) => {
     res
       .status(200)
       .json(
-        new ApiResponse(200, resetPasswordUrl,`Email has been sent to ${email} successfully`)
+        new ApiResponse(
+          200,
+          resetPasswordUrl,
+          `Email has been sent to ${email} successfully`
+        )
       );
   } catch (error) {
     console.log("error");
     throw new ApiError(500, error);
   }
 });
+
+// resetPassword......................................................................
 const resetPassword = asyncHandler(async (req, res) => {
   const { resetToken } = req.params;
   const { password } = req.body;
-
 
   const cryptr = new Cryptr(process.env.REFRESH_TOKEN_SECRET);
   const decryptedString = cryptr.decrypt(resetToken);
@@ -285,11 +296,9 @@ const resetPassword = asyncHandler(async (req, res) => {
   }
 
   const user = await User.findOne({
-    forgotPasswordToken:  decryptedString,
+    forgotPasswordToken: decryptedString,
     forgotPasswordExpiry: { $gt: Date.now() },
-   
   });
-
 
   if (!user) {
     throw new ApiError(404, "Token is invalid or expired, please try again");
@@ -309,8 +318,41 @@ const resetPassword = asyncHandler(async (req, res) => {
     { new: true, select: "-password" }
   );
 
-  res.status(200).json(new ApiResponse(200,updatedUser ,"Successfully changed password"));
+  res
+    .status(200)
+    .json(new ApiResponse(200, updatedUser, "Successfully changed password"));
 });
+
+// changePassword......................................................................
+
+const changePassword = asyncHandler(async (req, res) => {
+  const { oldpassword, newpassword, confirmPassword } = req.body;
+
+  if (!(oldpassword && newpassword && confirmPassword)) {
+    throw new ApiError(400, "Please provide all fields");
+  }
+  // check old password
+  const user = await User.findById(req.user._id).select("+password");
+  if (!user) {
+    throw new ApiError(400, "Invalid credentials");
+  }
+  const isPasswordValid = await user.isPasswordCorret(oldpassword);
+
+  if (!isPasswordValid) {
+    return next(new ApiError("Invalid old password", 400));
+  }
+
+  // Check if the passwords match
+  if (newpassword !== confirmPassword) {
+    throw new ApiError(400, "confirmPassword do not match");
+  }
+  // update password
+  user.password = await bcrypt.hash(newpassword, 10);
+
+  res.status(200).json((new ApiResponse(200, true,"Password has been successfully changed")));
+
+})
+// ......................................................................
 
 
 export {
@@ -321,4 +363,5 @@ export {
   updateUserAvatar,
   forgotPassword,
   resetPassword,
+  changePassword
 };

@@ -6,7 +6,8 @@ import {
   getProfile,
   updateUserAvatar,
   resetPassword,
-  forgotPassword
+  forgotPassword,
+  changePassword
 } from "../controllers/user.controller.js";
 import { isLoggedIn } from "../middlewares/auth.middlewares.js";
 import upload from "../middlewares/multer.middleware.js";
@@ -27,5 +28,7 @@ router
 
 router.route("/reset").post(forgotPassword);
 router.route("/reset-password/:resetToken").post(resetPassword);
+router.route("/changepassword").post(isLoggedIn,changePassword);
+
 
 export default router;
