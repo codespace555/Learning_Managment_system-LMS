@@ -7,19 +7,22 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const uploadOncloudinary = async (localFilepath,CloudinaryfolderName) => {
+const uploadOncloudinary = async (localFilepath, CloudinaryfolderName) => {
   try {
     if (!localFilepath) return "could not find the file";
     const resp = await cloudinary.uploader.upload(localFilepath, {
       folder: CloudinaryfolderName,
-      resource_type: "auto", 
+      resource_type: "auto",
+      chunk_size: 50000000,
     });
     fs.unlinkSync(localFilepath);
     console.log("Uploaded to Cloudinary", resp.public_id);
     return resp;
   } catch (error) {
-    fs.unlinkSync(localFilepath); // delete local copy of image after locally saved temporary file as the upload operation got failed
-    return null;
+    if (error) {
+      fs.unlinkSync(localFilepath); // delete local copy of image after locally saved temporary file as the upload operation got failed
+    }
+    return error;
   }
 };
 
@@ -30,7 +33,7 @@ const fileDelete = async (publicId) => {
         "Deleting File From Cloudinary :",
         publicId,
         "Result : ",
-        res,
+        res
       );
     } else {
       console.log("Error in Deleting File From Cloudinary :", err);

@@ -10,7 +10,7 @@ app.use(
     credentials: true,
   })
 );
-const limit = "1mb";
+const limit = "16kb";
 app.use(express.json({ limit: limit }));
 app.use(express.urlencoded({ extended: true, limit: limit }));
 app.use(express.static("public"));
