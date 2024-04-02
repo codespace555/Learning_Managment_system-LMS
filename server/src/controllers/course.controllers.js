@@ -1,13 +1,18 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
-import { Course } from "../models/course.model.js";
+import {Course} from "../models/course.model.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadOncloudinary } from "../utils/cloudinary.js";
 
+// createCourse....................................................................
 const createCourse = asyncHandler(async (req, res) => {
   const { title, description, category, createdBy } = req.body;
- 
-  if ([title, description, category, createdBy].some((field) => field?.trim() == "")) {
+
+  if (
+    [title, description, category, createdBy].some(
+      (field) => field?.trim() == ""
+    )
+  ) {
     throw new ApiError(400, "All Field Required");
   }
   const coursethumbnail = await req.files?.thumbnail[0].path;
@@ -33,7 +38,16 @@ const createCourse = asyncHandler(async (req, res) => {
   if (!course) {
     throw new ApiError(500, "Course could not be created, please try again");
   }
-  res.status(200).json(new ApiResponse(200, course, "User create Sucessfully"));
+  res
+    .status(200)
+    .json(new ApiResponse(200, course, "course create Sucessfully"));
 });
 
-export { createCourse };
+const getAllCoruses = asyncHandler(async (req, res) => {
+  const courses = await Course.find({}).select("-lectures")
+  let course = [...courses]
+res.status(200).json(new ApiResponse(200, course,"All course get"));
+
+});
+
+export { createCourse,getAllCoruses };
