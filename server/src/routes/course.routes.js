@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { authorizeRoles, isLoggedIn } from "../middlewares/auth.middlewares.js";
 import {
+  SearchCourse,
   addlecturesonCourse,
   createCourse,
   getAllCoruses,
@@ -29,4 +30,7 @@ router.route("/addlectures/:id").post(
 
   addlecturesonCourse
 );
+
+
+router.route("/course-search/search").get(SearchCourse)
 export default router;

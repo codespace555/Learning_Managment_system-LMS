@@ -63,15 +63,11 @@ const addlecturesonCourse = asyncHandler(async (req, res) => {
   }
   const thumbnailLocalPath = await req.files?.lecturesThumbnail[0].path;
   const VideolLocalPath = await req.files?.lecture[0].path;
-  const lecture = await uploadVideo(
-    VideolLocalPath,
-    "LMS_Lectures_Video"
-  );
+  const lecture = await uploadVideo(VideolLocalPath, "LMS_Lectures_Video");
 
   if (!lecture) {
     throw new ApiError(400, " Failed to upload video");
   }
-
 
   const lecturesThumbnail = await uploadOncloudinary(
     thumbnailLocalPath,
@@ -82,7 +78,7 @@ const addlecturesonCourse = asyncHandler(async (req, res) => {
     throw new ApiError(400, " Failed to upload Lecture thumbnail");
   }
 
- course.lectures.push({
+  course.lectures.push({
     title,
     description,
     lecture: {
@@ -96,13 +92,25 @@ const addlecturesonCourse = asyncHandler(async (req, res) => {
     },
   });
 
-  
-  if(!course.lectures){
+  if (!course.lectures) {
     throw new ApiError(400, " Failed to upload Lecture ");
   }
-  await course.save()
+  await course.save();
 
   res.status(200).json(new ApiResponse(200, course, "All course get"));
 });
 
-export { createCourse, getAllCoruses, addlecturesonCourse };
+const SearchCourse = asyncHandler(async (req, res) => {
+  let searchKeyword = req.query.search;
+  console.log("Search Keyword : ", searchKeyword);
+  // Checking the keyword is empty or not
+  if (!searchKeyword || typeof searchKeyword !== "string" || searchKeyword.trim() === "") {
+    throw new ApiError(400, "Please provide a valid non-empty search keyword.");
+  }
+  
+  const courses = await Course.find({ $text:{$search: searchKeyword} }).exec();
+  res.status(200).json( new ApiResponse(200,courses,"Successfully searched"));
+});
+
+
+export { createCourse, getAllCoruses, addlecturesonCourse,SearchCourse };
