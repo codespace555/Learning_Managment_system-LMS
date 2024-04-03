@@ -4,6 +4,7 @@ import {
   SearchCourse,
   addlecturesonCourse,
   createCourse,
+  deleteCourse,
   getAllCoruses,
   updateCourse,
 } from "../controllers/course.controllers.js";
@@ -42,4 +43,6 @@ router.route("/update-course/:id").patch(
 );
 
 router.route("/course-search/search").get(SearchCourse)
+router.route("/removecourse/:id").put(deleteCourse)
+
 export default router;

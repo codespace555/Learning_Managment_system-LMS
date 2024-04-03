@@ -180,10 +180,35 @@ const updateCourse = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, updatedCourse, "update  course sucessfully"));
 });
 
+ const deleteCourse = asyncHandler(
+  async(req,res) =>{
+    const { id }= req.params;
+    if(!id){
+      throw new ApiError(400, 'Invalid request , provide an id');
+    }
+    let course = await Course.findByIdAndDelete(id)
+    console.log(course)
+    if (!course) {
+      throw new ApiError(404, "Course not found!");
+    }
+    const oldThumbnail = course.thumbnail;
+  
+    if (!oldThumbnail) {
+      throw new ApiError(400, "oldThumbnailis not found");
+    }
+  
+    await fileDelete(oldThumbnail.public_id);
+
+  res.status(200).json(new ApiResponse(200, null,"Deleted the course successfully!") )
+  
+  }
+)
+
 export {
   createCourse,
   getAllCoruses,
   addlecturesonCourse,
   SearchCourse,
   updateCourse,
+  deleteCourse
 };
