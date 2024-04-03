@@ -5,6 +5,7 @@ import {
   addlecturesonCourse,
   createCourse,
   getAllCoruses,
+  updateCourse,
 } from "../controllers/course.controllers.js";
 import upload from "../middlewares/multer.middleware.js";
 
@@ -31,6 +32,14 @@ router.route("/addlectures/:id").post(
   addlecturesonCourse
 );
 
+
+router.route("/update-course/:id").patch(
+  isLoggedIn,
+  authorizeRoles("ADMIN"),
+  upload.fields([{ name: "thumbnail", maxCount: 1 }]),
+
+  updateCourse
+);
 
 router.route("/course-search/search").get(SearchCourse)
 export default router;

@@ -135,7 +135,7 @@ const getProfile = asyncHandler(async (req, res) => {
 
 //updateUserAvatar..........................................................................
 const updateUserAvatar = asyncHandler(async (req, res) => {
-  const avatarLocalPath = req.file?.path;
+  const avatarLocalPath = req.files?.avatar[0].path;
   if (!avatarLocalPath) {
     throw new ApiError(400, "No image provided");
   }

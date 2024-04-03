@@ -2,7 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { Course } from "../models/course.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { uploadOncloudinary } from "../utils/cloudinary.js";
+import { fileDelete, uploadOncloudinary } from "../utils/cloudinary.js";
 import { uploadVideo } from "../utils/uploadVideo.js";
 
 // createCourse....................................................................
@@ -95,6 +95,7 @@ const addlecturesonCourse = asyncHandler(async (req, res) => {
   if (!course.lectures) {
     throw new ApiError(400, " Failed to upload Lecture ");
   }
+
   await course.save();
 
   res.status(200).json(new ApiResponse(200, course, "All course get"));
@@ -104,13 +105,85 @@ const SearchCourse = asyncHandler(async (req, res) => {
   let searchKeyword = req.query.search;
   console.log("Search Keyword : ", searchKeyword);
   // Checking the keyword is empty or not
-  if (!searchKeyword || typeof searchKeyword !== "string" || searchKeyword.trim() === "") {
+  if (
+    !searchKeyword ||
+    typeof searchKeyword !== "string" ||
+    searchKeyword.trim() === ""
+  ) {
     throw new ApiError(400, "Please provide a valid non-empty search keyword.");
   }
-  
-  const courses = await Course.find({ $text:{$search: searchKeyword} }).exec();
-  res.status(200).json( new ApiResponse(200,courses,"Successfully searched"));
+
+  const courses = await Course.find({
+    $text: { $search: searchKeyword },
+  }).exec();
+  res.status(200).json(new ApiResponse(200, courses, "Successfully searched"));
 });
 
+const updateCourse = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { title, description, category, createdBy } = req.body;
 
-export { createCourse, getAllCoruses, addlecturesonCourse,SearchCourse };
+  if (
+    [title, description, category, createdBy].some(
+      (field) => field?.trim() == ""
+    )
+  ) {
+    throw new ApiError(400, "All Field Required");
+  }
+
+  const thumbnailLocalPath = req.files?.thumbnail[0].path;
+
+  if (!thumbnailLocalPath) {
+    throw new ApiError(400, "thumbnail Field is Required");
+  }
+
+  const course = await Course.findById(id);
+  if (!course) {
+    throw new ApiError(404, "Course not found");
+  }
+  const oldThumbnail = course.thumbnail;
+
+  if (!oldThumbnail) {
+    throw new ApiError(400, "oldThumbnailis not found");
+  }
+
+  await fileDelete(oldThumbnail.public_id);
+  const updateThumbnail = await uploadOncloudinary(
+    thumbnailLocalPath,
+    "LMS_coursethumbnail"
+  );
+
+  const updatedCourse = await Course.findByIdAndUpdate(
+    id,
+    {
+      $set: {
+        title,
+        description,
+        category,
+        createdBy,
+        thumbnail: {
+          public_id: updateThumbnail.public_id,
+          secure_url: updateThumbnail.url,
+        },
+        updatedAt: Date.now(),
+      },
+    },
+    { new: true, runValidators: true }
+  );
+
+  if (!updatedCourse) {
+    throw new ApiError(404, "No such course found");
+  }
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, updatedCourse, "update  course sucessfully"));
+});
+
+export {
+  createCourse,
+  getAllCoruses,
+  addlecturesonCourse,
+  SearchCourse,
+  updateCourse,
+};
