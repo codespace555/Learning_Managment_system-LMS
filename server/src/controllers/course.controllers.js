@@ -271,6 +271,47 @@ const updatelecturesonCourse = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, course, " course update successfully"));
 });
 
+
+const deleteCourselecture = asyncHandler(async (req, res) => {
+  const { courseId, lectureId } = req.params;
+  console.log(lectureId, courseId);
+  if (!courseId) {
+    throw new ApiError(400, "courseId Field Required");
+  }
+  if (!lectureId) {
+    throw new ApiError(400, "lectureId Field Required");
+  }
+
+
+  const course = await Course.findById(courseId);
+
+  if (!course) {
+    throw new ApiError(400, "Course not found");
+  }
+
+
+  const lectureIndex = course.lectures.findIndex(
+    (lecture) => lecture._id.toString() === lectureId.toString()
+  );
+  if (lectureIndex === -1) {
+    throw new ApiError(400, "lecture not found");
+  }
+
+
+  await fileDelete(course.lectures[lectureIndex].lecture.public_id);
+  await fileDelete(course.lectures[lectureIndex].lecturesThumbnail.public_id);
+
+  course.lectures.splice(lectureIndex, 1)
+
+  await course.save();
+
+  res
+  .status(200)
+  .json(new ApiResponse(200, null, "Deleted the course successfully!"));
+
+
+})
+
 export {
   createCourse,
   getAllCoruses,
@@ -279,4 +320,5 @@ export {
   updateCourse,
   deleteCourse,
   updatelecturesonCourse,
+  deleteCourselecture
 };
