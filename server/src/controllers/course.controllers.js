@@ -50,57 +50,6 @@ const getAllCoruses = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, course, "All course get"));
 });
 
-const addlecturesonCourse = asyncHandler(async (req, res) => {
-  const { title, description } = req.body;
-  const { id } = req.params;
-  let lectureData = {};
-  if (!title || !description) {
-    throw new ApiError(400, "All Field Required");
-  }
-  const course = await Course.findById(id);
-  if (!course) {
-    throw new ApiError(400, "Course not found");
-  }
-  const thumbnailLocalPath = await req.files?.lecturesThumbnail[0].path;
-  const VideolLocalPath = await req.files?.lecture[0].path;
-  const lecture = await uploadVideo(VideolLocalPath, "LMS_Lectures_Video");
-
-  if (!lecture) {
-    throw new ApiError(400, " Failed to upload video");
-  }
-
-  const lecturesThumbnail = await uploadOncloudinary(
-    thumbnailLocalPath,
-    "LMS_Lectures_thumbnail"
-  );
-
-  if (!lecturesThumbnail) {
-    throw new ApiError(400, " Failed to upload Lecture thumbnail");
-  }
-
-  course.lectures.push({
-    title,
-    description,
-    lecture: {
-      public_id: lecture.public_id,
-      secure_url: lecture.url,
-    },
-
-    lecturesThumbnail: {
-      public_id: lecturesThumbnail.public_id,
-      secure_url: lecturesThumbnail.url,
-    },
-  });
-
-  if (!course.lectures) {
-    throw new ApiError(400, " Failed to upload Lecture ");
-  }
-
-  await course.save();
-
-  res.status(200).json(new ApiResponse(200, course, "All course get"));
-});
-
 const SearchCourse = asyncHandler(async (req, res) => {
   let searchKeyword = req.query.search;
   console.log("Search Keyword : ", searchKeyword);
@@ -180,29 +129,147 @@ const updateCourse = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, updatedCourse, "update  course sucessfully"));
 });
 
- const deleteCourse = asyncHandler(
-  async(req,res) =>{
-    const { id }= req.params;
-    if(!id){
-      throw new ApiError(400, 'Invalid request , provide an id');
-    }
-    let course = await Course.findByIdAndDelete(id)
-    console.log(course)
-    if (!course) {
-      throw new ApiError(404, "Course not found!");
-    }
-    const oldThumbnail = course.thumbnail;
-  
-    if (!oldThumbnail) {
-      throw new ApiError(400, "oldThumbnailis not found");
-    }
-  
-    await fileDelete(oldThumbnail.public_id);
-
-  res.status(200).json(new ApiResponse(200, null,"Deleted the course successfully!") )
-  
+const deleteCourse = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    throw new ApiError(400, "Invalid request , provide an id");
   }
-)
+  let course = await Course.findByIdAndDelete(id);
+  console.log(course);
+  if (!course) {
+    throw new ApiError(404, "Course not found!");
+  }
+  const oldThumbnail = course.thumbnail;
+
+  if (!oldThumbnail) {
+    throw new ApiError(400, "oldThumbnailis not found");
+  }
+
+  await fileDelete(oldThumbnail.public_id);
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, null, "Deleted the course successfully!"));
+});
+
+const addlecturesonCourse = asyncHandler(async (req, res) => {
+  const { title, description } = req.body;
+  const { id } = req.params;
+
+  if (!title || !description) {
+    throw new ApiError(400, "All Field Required");
+  }
+  const course = await Course.findById(id);
+  if (!course) {
+    throw new ApiError(400, "Course not found");
+  }
+  const thumbnailLocalPath = await req.files?.lecturesThumbnail[0].path;
+  const VideolLocalPath = await req.files?.lecture[0].path;
+  const lecture = await uploadVideo(VideolLocalPath, "LMS_Lectures_Video");
+
+  if (!lecture) {
+    throw new ApiError(400, " Failed to upload video");
+  }
+
+  const lecturesThumbnail = await uploadOncloudinary(
+    thumbnailLocalPath,
+    "LMS_Lectures_thumbnail"
+  );
+
+  if (!lecturesThumbnail) {
+    throw new ApiError(400, " Failed to upload Lecture thumbnail");
+  }
+
+  course.lectures.push({
+    title,
+    description,
+    lecture: {
+      public_id: lecture.public_id,
+      secure_url: lecture.url,
+    },
+
+    lecturesThumbnail: {
+      public_id: lecturesThumbnail.public_id,
+      secure_url: lecturesThumbnail.url,
+    },
+  });
+
+  if (!course.lectures) {
+    throw new ApiError(400, " Failed to upload Lecture ");
+  }
+
+  await course.save();
+
+  res.status(200).json(new ApiResponse(200, course, "All course get"));
+});
+
+const updatelecturesonCourse = asyncHandler(async (req, res) => {
+  const { courseId, lectureId } = req.params;
+  console.log(lectureId, courseId);
+  if (!courseId) {
+    throw new ApiError(400, "courseId Field Required");
+  }
+  if (!lectureId) {
+    throw new ApiError(400, "lectureId Field Required");
+  }
+  const { title, description } = req.body;
+  if (!title || !description) {
+    throw new ApiError(400, "All Field Required");
+  }
+  const course = await Course.findById(courseId);
+
+  if (!course) {
+    throw new ApiError(400, "Course not found");
+  }
+
+  const lectureIndex = course.lectures.findIndex(
+    (lecture) => lecture._id.toString() === lectureId.toString()
+  );
+  if (lectureIndex === -1) {
+    throw new ApiError(400, "lecture not found");
+  }
+
+  const thumbnailLocalPath = await req.files?.lecturesThumbnail[0].path;
+  const VideolLocalPath = await req.files?.lecture[0].path;
+  await fileDelete(course.lectures[lectureIndex].lecture.public_id);
+  await fileDelete(course.lectures[lectureIndex].lecturesThumbnail.public_id);
+
+  const uploadedVideo = await uploadVideo(
+    VideolLocalPath,
+    "LMS_Lectures_Video"
+  );
+
+  const lecturesThumbnail = await uploadOncloudinary(
+    thumbnailLocalPath,
+    "LMS_Lectures_thumbnail"
+  );
+
+  if (!uploadedVideo) {
+    throw new ApiError(400, " Failed to upload video");
+  }
+
+  if (!lecturesThumbnail) {
+    throw new ApiError(400, " Failed to upload Lecture thumbnail");
+  }
+
+  course.lectures[lectureIndex].title = title;
+  course.lectures[lectureIndex].description = description;
+  course.lectures[lectureIndex].lecture = {
+    public_id: uploadedVideo.public_id,
+    secure_url: uploadedVideo.url,
+  };
+  course.lectures[lectureIndex].lecturesThumbnail = {
+    public_id: lecturesThumbnail.public_id,
+    secure_url: lecturesThumbnail.url,
+  };
+
+  // Save updated course
+  await course.save();
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, course, " course update successfully"));
+});
 
 export {
   createCourse,
@@ -210,5 +277,6 @@ export {
   addlecturesonCourse,
   SearchCourse,
   updateCourse,
-  deleteCourse
+  deleteCourse,
+  updatelecturesonCourse,
 };

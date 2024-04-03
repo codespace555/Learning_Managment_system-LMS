@@ -7,6 +7,7 @@ import {
   deleteCourse,
   getAllCoruses,
   updateCourse,
+  updatelecturesonCourse,
 } from "../controllers/course.controllers.js";
 import upload from "../middlewares/multer.middleware.js";
 
@@ -34,7 +35,7 @@ router.route("/addlectures/:id").post(
 );
 
 
-router.route("/update-course/:id").patch(
+router.route("/update-course/:id").put(
   isLoggedIn,
   authorizeRoles("ADMIN"),
   upload.fields([{ name: "thumbnail", maxCount: 1 }]),
@@ -43,6 +44,17 @@ router.route("/update-course/:id").patch(
 );
 
 router.route("/course-search/search").get(SearchCourse)
-router.route("/removecourse/:id").put(deleteCourse)
+router.route("/removecourse/:id").delete(deleteCourse)
+router.put('/:courseId/:lectureId', 
+isLoggedIn,
+authorizeRoles("ADMIN"),
+
+upload.fields([
+  { name: "lecture", maxCount: 1 },
+  { name: "lecturesThumbnail", maxCount: 1 },
+]),
+
+updatelecturesonCourse)
+
 
 export default router;
