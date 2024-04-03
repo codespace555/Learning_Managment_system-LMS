@@ -3,9 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { Course } from "../models/course.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadOncloudinary } from "../utils/cloudinary.js";
-import { v2 as cloudinary } from "cloudinary";
-
-import fs, { unlinkSync } from "fs";
+import { uploadVideo } from "../utils/uploadVideo.js";
 
 // createCourse....................................................................
 const createCourse = asyncHandler(async (req, res) => {
@@ -64,8 +62,8 @@ const addlecturesonCourse = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Course not found");
   }
   const thumbnailLocalPath = await req.files?.lecturesThumbnail[0].path;
-  const VideolLocalPath = await req.files?.lecture.path;
-  const lecture = await uploadOncloudinary(
+  const VideolLocalPath = await req.files?.lecture[0].path;
+  const lecture = await uploadVideo(
     VideolLocalPath,
     "LMS_Lectures_Video"
   );
@@ -84,16 +82,25 @@ const addlecturesonCourse = asyncHandler(async (req, res) => {
     throw new ApiError(400, " Failed to upload Lecture thumbnail");
   }
 
-  course.lectures.push({
+ course.lectures.push({
     title,
     description,
-    lecture: lectureData,
-
-    lecturesThumbnail: {
+    lecture: {
       public_id: lecture.public_id,
       secure_url: lecture.url,
     },
+
+    lecturesThumbnail: {
+      public_id: lecturesThumbnail.public_id,
+      secure_url: lecturesThumbnail.url,
+    },
   });
+
+  
+  if(!course.lectures){
+    throw new ApiError(400, " Failed to upload Lecture ");
+  }
+  await course.save()
 
   res.status(200).json(new ApiResponse(200, course, "All course get"));
 });

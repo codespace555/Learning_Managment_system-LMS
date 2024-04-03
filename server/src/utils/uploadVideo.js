@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
-import fs, { unlinkSync } from "fs";
+import fs from "fs";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -7,12 +7,17 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const uploadOncloudinary = async (localFilepath, CloudinaryfolderName) => {
+const uploadVideo = async (localFilepath, CloudinaryfolderName) => {
   try {
     if (!localFilepath) return "could not find the file";
-    const resp = await cloudinary.uploader.upload(localFilepath, {
+    const resp = await cloudinary.uploader.upload(
+        localFilepath, {
       folder: CloudinaryfolderName,
-      resource_type: "auto"
+      resource_type: "video",
+      eager: [
+        { width: 300, height: 300, crop: "pad", audio_codec: "none" }, 
+        { width: 160, height: 100, crop: "crop", gravity: "south", audio_codec: "none" } ],
+        eager_async: true, 
     });
     fs.unlinkSync(localFilepath);
     console.log("Uploaded to Cloudinary", resp.public_id);
@@ -25,20 +30,4 @@ const uploadOncloudinary = async (localFilepath, CloudinaryfolderName) => {
   }
 };
 
-const fileDelete = async (publicId) => {
-  let result = await cloudinary.uploader.destroy(publicId, function (err, res) {
-    if (!err) {
-      console.log(
-        "Deleting File From Cloudinary :",
-        publicId,
-        "Result : ",
-        res
-      );
-    } else {
-      console.log("Error in Deleting File From Cloudinary :", err);
-    }
-  });
-  return result;
-};
-
-export { uploadOncloudinary, fileDelete };
+export { uploadVideo };
