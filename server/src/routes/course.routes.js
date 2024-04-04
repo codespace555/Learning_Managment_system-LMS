@@ -5,6 +5,7 @@ import {
   addlecturesonCourse,
   createCourse,
   deleteCourse,
+  deleteCourselecture,
   getAllCoruses,
   updateCourse,
   updatelecturesonCourse,
@@ -34,7 +35,6 @@ router.route("/addlectures/:id").post(
   addlecturesonCourse
 );
 
-
 router.route("/update-course/:id").put(
   isLoggedIn,
   authorizeRoles("ADMIN"),
@@ -43,18 +43,23 @@ router.route("/update-course/:id").put(
   updateCourse
 );
 
-router.route("/course-search/search").get(SearchCourse)
-router.route("/removecourse/:id").delete(deleteCourse)
-router.put('/:courseId/:lectureId', 
-isLoggedIn,
-authorizeRoles("ADMIN"),
+router.route("/course-search/search").get(SearchCourse);
+router.route("/removecourse/:id").delete(deleteCourse);
+router.put(
+  "/:courseId/:lectureId",
+  isLoggedIn,
+  authorizeRoles("ADMIN"),
 
-upload.fields([
-  { name: "lecture", maxCount: 1 },
-  { name: "lecturesThumbnail", maxCount: 1 },
-]),
+  upload.fields([
+    { name: "lecture", maxCount: 1 },
+    { name: "lecturesThumbnail", maxCount: 1 },
+  ]),
 
-updatelecturesonCourse)
+  updatelecturesonCourse
+);
 
+router
+  .route("/removelecture/:courseId/:lectureId")
+  .delete(isLoggedIn, authorizeRoles("ADMIN"), deleteCourselecture);
 
 export default router;
