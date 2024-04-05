@@ -24,7 +24,7 @@ router.route("/logout").get(isLoggedIn, logout);
 router.route("/profile").get(isLoggedIn, getProfile);
 router
   .route("/update-avatar")
-  .patch(isLoggedIn, upload.single("avatar"), updateUserAvatar);
+  .put(isLoggedIn, upload.single("avatar"), updateUserAvatar);
 
 router.route("/reset").post(forgotPassword);
 router.route("/reset-password/:resetToken").post(resetPassword);
