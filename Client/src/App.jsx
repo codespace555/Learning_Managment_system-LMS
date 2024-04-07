@@ -3,7 +3,7 @@ function App() {
 
   return (
     <>
-    <h1 className="font-light bg-slate-700"></h1>
+    <h1 className="font-light bg-slate-700 text-xl"></h1>
     </>
   )
 }
