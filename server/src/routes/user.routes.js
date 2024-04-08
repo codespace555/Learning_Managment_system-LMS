@@ -31,4 +31,5 @@ router.route("/reset-password/:resetToken").post(resetPassword);
 router.route("/changepassword").post(isLoggedIn,changePassword);
 
 
+
 export default router;
