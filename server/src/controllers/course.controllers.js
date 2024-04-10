@@ -52,6 +52,8 @@ const getAllCoruses = asyncHandler(async (req, res) => {
 
 const SearchCourse = asyncHandler(async (req, res) => {
   let searchKeyword = req.query.search;
+  let page = parseInt(req.query.page) || 1;
+  let limit = parseInt(req.query.limit) || 10;
   console.log("Search Keyword : ", searchKeyword);
   // Checking the keyword is empty or not
   if (
@@ -62,10 +64,29 @@ const SearchCourse = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please provide a valid non-empty search keyword.");
   }
 
-  const courses = await Course.find({
-    $text: { $search: searchKeyword },
+  const searchWords = searchKeyword.trim().toLowerCase().split(/\s+/);
+
+  const searchConditions = searchWords.map((word) => ({
+    title: { $regex: new RegExp(word, "i") },
+  }));
+
+  const count = await Course.countDocuments({ $or: searchConditions });
+  const totalPages = Math.ceil(count / limit);
+  const set = limit * (page - 1);
+
+  const courses = await Course.find({ $or: searchConditions }, null, {
+    skip: set,
+    limit: limit,
   }).exec();
-  res.status(200).json(new ApiResponse(200, courses, "Successfully searched"));
+  if (courses.length === 0) {
+    return res.status(404).json({ error: "No products found" });
+  }
+ 
+  res.status(200).json(new ApiResponse(200, {
+    totalResults: count,
+    totalPages:totalPages,
+    courses: courses,
+  }, "Successfully searched"));
 });
 
 const updateCourse = asyncHandler(async (req, res) => {
