@@ -1,9 +1,12 @@
+import Navbar from "./Components/Navbar"
+
+
 function App() {
  
 
   return (
     <>
-    <h1 className="font-light bg-slate-700 text-xl"></h1>
+<Navbar/>
     </>
   )
 }
