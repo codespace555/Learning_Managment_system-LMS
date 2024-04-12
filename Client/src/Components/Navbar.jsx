@@ -116,14 +116,13 @@ function Navbar() {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="menu p-4 w-80 min-h-full bg-base-100/60 mt-12 shadow-xl">
+          <ul className="menu p-4 w-80 min-h-full bg-base-100/80 mt-20 shadow-xl">
             {/* Sidebar content here */}
-            <li>
-              <a>Sidebar Item 1</a>
-            </li>
-            <li>
-              <a>Sidebar Item 2</a>
-            </li>
+            {nav.map((item, index) => (
+                  <li key={index}>
+                    <a> {item.icon}{item.name}</a>
+                  </li>
+                ))}
           </ul>
         </div>
       </nav>
