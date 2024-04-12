@@ -1,10 +1,44 @@
 import React from "react";
 import Logo from "./Logo";
+import { SiHomeadvisor } from "react-icons/si";
+import { SiCoursera } from "react-icons/si";
+import { FaRobot } from "react-icons/fa6";
+import { FaKeyboard } from "react-icons/fa";
+import { LuFrame } from "react-icons/lu";
+import { FcAbout } from "react-icons/fc";
 
 function Navbar() {
   const nav = [
-    { name: "Home", link: "/" },
-    { name: "About", link: "/about" },
+    {
+      name: "Home",
+      link: "/",
+      icon:<SiHomeadvisor /> ,
+    },
+    {
+      name: "Courses",
+      link: "/",
+      icon: <SiCoursera />,
+    },
+    {
+      name: "Typing Test",
+      link: "/",
+      icon: <FaKeyboard />,
+    },
+    {
+      name: "Hall of Fame",
+      link: "/",
+      icon: <LuFrame />,
+    },
+    {
+      name: "About",
+      link: "/about",
+      icon: <FcAbout />,
+    },
+    {
+      name: "AI Assistant",
+      link: "/about",
+      icon: <FaRobot />,
+    },
   ];
   return (
     <>
@@ -12,7 +46,7 @@ function Navbar() {
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col">
           {/* Navbar */}
-          <div className="w-full navbarsticky top-0 z-40 backdrop-blur p-5 transition-colors duration-500 lg:z-50 lg:border-b lg:border-slate-900/10 dark:border-slate-50/[0.06] bg-white supports-backdrop-blur:bg-white/95 dark:bg-slate-900/75 justify-center items-center">
+          <div className="w-full navbarsticky top-0 z-40 backdrop-blur p-5 transition-colors duration-500 lg:z-50 lg:border-b lg:border-slate-900/10 dark:border-slate-50/[0.06] bg-gray-500 supports-backdrop-blur:bg-white/95 dark:bg-slate-900/75 justify-center items-center">
             <div className="flex justify-between items-center w-full">
               <div className="flex-none lg:hidden">
                 <label
@@ -36,10 +70,10 @@ function Navbar() {
                 </label>
               </div>
               <div className=" text-2xl max-w-56 px-5 mx-2 font-semibold">
-              <Logo/>
+                <Logo />
               </div>
 
-              <div class=" md:flex bg-zinc-900 items-center gap-x-3 py-[10px] px-5  w-[70%] relative rounded-lg    hidden lg:flex">
+              <div className=" md:flex bg-zinc-900 items-center gap-x-3 py-[10px] px-5  w-[70%] relative rounded-lg    hidden lg:flex mx-5">
                 <svg
                   className="w-6 h-6 text-gray-650 "
                   viewBox="0 0 512 512"
@@ -52,42 +86,26 @@ function Navbar() {
                   ></path>
                 </svg>
                 <input
-                  class="focus:outline-none text-gray-500 w-full placeholder:text-gray-650 bg-zinc-900"
+                  className="focus:outline-none text-gray-500 w-full placeholder:text-gray-650 bg-zinc-900"
                   type="text"
-                  placeholder="Search by product title"
-                  
+                  placeholder="Search by course title"
                 />
-                
               </div>
               <ul>
-              <button className="btn btn-outline btn-secondary flex-none  hidden lg:block">Login/Register</button>
+                <button className="btn btn-outline btn-secondary flex-none  hidden lg:block">
+                  Login/Register
+                </button>
               </ul>
             </div>
             <div className="flex-none  hidden lg:block ">
-              <ul className="menu menu-horizontal justify-between items-center flex px-14 bg-slate-950 mt-3 rounded-xl text-sm">
+              <ul className="menu menu-horizontal justify-between items-center flex px-14 bg-slate-400 dark:bg-slate-950 mt-3 rounded-xl text-sm">
                 {/* Navbar menu content here */}
 
-                <li>
-                  <a>Navbar Item 1</a>
-                </li>
-                <li>
-                  <a>Navbar Item 2</a>
-                </li>
-                <li>
-                  <a>Navbar Item 2</a>
-                </li>
-                <li>
-                  <a>Navbar Item 2</a>
-                </li>
-                <li>
-                  <a>Navbar Item 2</a>
-                </li>
-                <li>
-                  <a>Navbar Item 2</a>
-                </li>
-                <li>
-                  <a>Navbar Item 2</a>
-                </li>
+                {nav.map((item, index) => (
+                  <li key={index}>
+                    <a> {item.icon}{item.name}</a>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
