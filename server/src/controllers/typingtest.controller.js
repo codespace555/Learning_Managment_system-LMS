@@ -8,7 +8,7 @@ const createTest = asyncHandler(async (req, res) => {
   const { userId, test_date, test_duration, acuracy, speed } = req.body;
   if (
     [userId, test_date, test_duration, acuracy, speed].some(
-      (field) => field?.trim() === ""
+      (field) => field?.trim() !== " "
     )
   ) {
     throw new ApiError(400, "All Field Required");
