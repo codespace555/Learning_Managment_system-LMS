@@ -6,6 +6,7 @@ import { FaRobot } from "react-icons/fa6";
 import { FaKeyboard } from "react-icons/fa";
 import { LuFrame } from "react-icons/lu";
 import { FcAbout } from "react-icons/fc";
+import { Link } from "react-router-dom";
 
 function Navbar() {
   const nav = [
@@ -46,7 +47,7 @@ function Navbar() {
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col">
           {/* Navbar */}
-          <div className="w-full navbarsticky top-0 z-40 backdrop-blur p-5 transition-colors duration-500 lg:z-50 lg:border-b lg:border-slate-900/10 dark:border-slate-50/[0.06] bg-gray-500 supports-backdrop-blur:bg-white/95 dark:bg-slate-900/75 justify-center items-center ">
+          <div className="w-full navbarsticky top-0 z-50 backdrop-blur p-5 transition-colors duration-500 lg:z-50 lg:border-b lg:border-slate-900/10 dark:border-slate-50/[0.06] bg-gray-500 supports-backdrop-blur:bg-white/95 dark:bg-slate-900/75 justify-center items-center ">
             <div className="flex justify-between items-center w-full">
               <div className="flex-none lg:hidden">
                 <label
@@ -92,29 +93,31 @@ function Navbar() {
                 />
               </div>
               <ul>
-                <button className="btn btn-outline btn-secondary flex-none  hidden lg:block">
-                  Login/Register
-                </button>
+                <Link to="/account/login">
+                  <button className="btn btn-outline btn-secondary flex-none  ">
+                    Login/Register
+                  </button>
+                </Link>
               </ul>
             </div>
             <div className="flex-none  hidden lg:block ">
-              <ul className="menu menu-horizontal justify-between items-center flex px-14 bg-slate-400 dark:bg-slate-950 mt-3 rounded-xl text-sm">
+              <ul className="menu menu-horizontal justify-between items-center flex px-14 bg-slate-400 dark:bg-slate-950 mt-3 rounded-xl text-sm ">
                 {/* Navbar menu content here */}
 
                 {nav.map((item, index) => (
                   <li key={index}>
-                    <a>
+                    <Link to={`${item.link}`}>
                       {" "}
                       {item.icon}
                       {item.name}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
             </div>
           </div>
         </div>
-        <div className="drawer-side">
+        <div className="drawer-side z-50">
           <label
             htmlFor="my-drawer-3"
             aria-label="close sidebar"
@@ -124,17 +127,18 @@ function Navbar() {
             {/* Sidebar content here */}
             {nav.map((item, index) => (
               <li key={index}>
-                <a>
+                <Link to={`${item.link}`}>
                   {" "}
                   {item.icon}
                   {item.name}
-                </a>
+                </Link>
               </li>
             ))}
-
-            <button className="btn btn-outline btn-secondary flex-none  ">
-              Login/Register
-            </button>
+            <Link to="/account/login">
+              <button className="btn btn-outline btn-secondary flex-none  ">
+                Login/Register
+              </button>
+            </Link>
 
             <div className=" md:hidden bg-zinc-900 items-center gap-x-3 py-[10px] px-5  w-full relative rounded-lg flex  lg:hidden">
               <svg

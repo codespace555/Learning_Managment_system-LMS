@@ -1,9 +1,10 @@
 import React from 'react'
+import logonobackground from "../assets/logonobackground.png";
 
 function Logo() {
   return (
     <div>
-      <img src="./logo-no-background.png" alt="learnfytech" />
+      <img src={logonobackground} alt="learnfytech" />
     </div>
   )
 }

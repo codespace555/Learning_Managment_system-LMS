@@ -1,3 +1,4 @@
+import { Outlet } from "react-router-dom";
 import Footer from "./Components/Footer";
 import Header from "./Components/Header";
 import Navbar from "./Components/Navbar";
@@ -10,7 +11,7 @@ function App() {
         <Navbar />
         <main className="h-screen">
 
-        <Home />
+       <Outlet/>
         </main>
         <Footer />
       </div>
