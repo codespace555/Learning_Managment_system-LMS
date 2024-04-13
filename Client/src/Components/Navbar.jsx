@@ -117,7 +117,7 @@ function Navbar() {
             </div>
           </div>
         </div>
-        <div className="drawer-side z-50">
+        <div className="drawer-side z-40">
           <label
             htmlFor="my-drawer-3"
             aria-label="close sidebar"
@@ -134,11 +134,6 @@ function Navbar() {
                 </Link>
               </li>
             ))}
-            <Link to="/account/login">
-              <button className="btn btn-outline btn-secondary flex-none  ">
-                Login/Register
-              </button>
-            </Link>
 
             <div className=" md:hidden bg-zinc-900 items-center gap-x-3 py-[10px] px-5  w-full relative rounded-lg flex  lg:hidden">
               <svg
