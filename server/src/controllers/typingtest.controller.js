@@ -6,14 +6,13 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 const createTest = asyncHandler(async (req, res) => {
   const { userId, test_date, test_duration, acuracy, speed } = req.body;
-  if (
-    [userId, test_date, test_duration, acuracy, speed].some(
-      (field) => field?.trim() !== " "
-    )
-  ) {
+ 
+  console.log(req.body)
+
+  if ([userId, test_date, test_duration, acuracy, speed].some((field) => field == undefined)) {
     throw new ApiError(400, "All Field Required");
-  
   }
+
 
   const test = await Test.create({
     userId,
@@ -66,7 +65,7 @@ const getLeaderboard = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Not find Any Data");
   }
   const getAllUser = await leaderboard.map(async (test) => {
-    const user = await User.findById(entry._id);
+    const user = await User.findById(test._id);
     return { username: user.username, average_speed: entry.averageSpeed };
   });
 
