@@ -11,7 +11,7 @@ const createCourse = asyncHandler(async (req, res) => {
 
   if (
     [title, description, category, createdBy].some(
-      (field) => field?.trim() == ""
+      (field) => field?.trim() === ""
     )
   ) {
     throw new ApiError(400, "All Field Required");

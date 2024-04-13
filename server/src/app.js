@@ -27,7 +27,9 @@ import courseRouts from "./routes/course.routes.js"
 app.use("/api/v1/course",courseRouts)
 
 
+import TypingtestRouts from "./routes/Test.routs.js"
 
+app.use("/api/v1/typingtest",TypingtestRouts)
 
 
 export default app
