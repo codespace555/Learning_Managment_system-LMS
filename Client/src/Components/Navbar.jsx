@@ -12,7 +12,7 @@ function Navbar() {
     {
       name: "Home",
       link: "/",
-      icon:<SiHomeadvisor /> ,
+      icon: <SiHomeadvisor />,
     },
     {
       name: "Courses",
@@ -103,7 +103,11 @@ function Navbar() {
 
                 {nav.map((item, index) => (
                   <li key={index}>
-                    <a> {item.icon}{item.name}</a>
+                    <a>
+                      {" "}
+                      {item.icon}
+                      {item.name}
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -116,13 +120,40 @@ function Navbar() {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="menu p-4 w-80 min-h-full bg-base-100/80 mt-20 shadow-xl">
+          <ul className="menu p-4 w-80 min-h-full bg-base-100/80 mt-20 shadow-xl gap-5">
             {/* Sidebar content here */}
             {nav.map((item, index) => (
-                  <li key={index}>
-                    <a> {item.icon}{item.name}</a>
-                  </li>
-                ))}
+              <li key={index}>
+                <a>
+                  {" "}
+                  {item.icon}
+                  {item.name}
+                </a>
+              </li>
+            ))}
+
+            <button className="btn btn-outline btn-secondary flex-none  ">
+              Login/Register
+            </button>
+
+            <div className=" md:hidden bg-zinc-900 items-center gap-x-3 py-[10px] px-5  w-full relative rounded-lg flex  lg:hidden">
+              <svg
+                className="w-6 h-6 text-gray-650 "
+                viewBox="0 0 512 512"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M464 428L339.92 303.9C359.916 276.421 370.673 243.304 370.64 209.32C370.64 120.37 298.27 48 209.32 48C120.37 48 48 120.37 48 209.32C48 298.27 120.37 370.64 209.32 370.64C243.304 370.673 276.421 359.916 303.9 339.92L428 464L464 428ZM209.32 319.69C187.488 319.692 166.146 313.22 147.992 301.092C129.839 288.964 115.69 271.725 107.334 251.555C98.9785 231.385 96.7917 209.191 101.05 187.778C105.309 166.366 115.822 146.697 131.26 131.26C146.697 115.822 166.366 105.309 187.778 101.05C209.191 96.7917 231.385 98.9785 251.555 107.334C271.725 115.69 288.964 129.839 301.092 147.992C313.22 166.146 319.692 187.488 319.69 209.32C319.656 238.581 308.016 266.634 287.325 287.325C266.634 308.016 238.581 319.656 209.32 319.69Z"
+                  fill="currentColor"
+                ></path>
+              </svg>
+              <input
+                className="focus:outline-none text-gray-500 w-full placeholder:text-gray-650 bg-zinc-900"
+                type="text"
+                placeholder="Search by course title"
+              />
+            </div>
           </ul>
         </div>
       </nav>
