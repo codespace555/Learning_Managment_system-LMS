@@ -4,7 +4,8 @@ import App from "./App.jsx";
 import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
-import { Account, Home, Login, Register } from "./Pages/pages.js";
+import { About, Account, Course, Halloffame, Home, Login, Register, Typeing } from "./Pages/pages.js";
+
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,23 @@ const router = createBrowserRouter([
           },
         ],
       },
+
+      {
+        path:"/course",
+        element:<Course/>
+      },
+      {
+        path:"/typing",
+        element:<Typeing/>
+      },
+      {
+        path:"/halloffame",
+        element:<Halloffame/>
+      },
+      {
+        path:"/about",
+        element:<About/>
+      }
     ],
   },
 ]);

@@ -17,17 +17,17 @@ function Navbar() {
     },
     {
       name: "Courses",
-      link: "/",
+      link: "/course",
       icon: <SiCoursera />,
     },
     {
       name: "Typing Test",
-      link: "/",
+      link: "/typing",
       icon: <FaKeyboard />,
     },
     {
       name: "Hall of Fame",
-      link: "/",
+      link: "/halloffame",
       icon: <LuFrame />,
     },
     {
