@@ -3,7 +3,7 @@ import React from 'react'
 function Typeing() {
   return (
     <div>
-      <h1>Typing Test</h1>
+      <h1>Typing Test page</h1>
     </div>
   )
 }
