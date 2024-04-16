@@ -1,8 +1,6 @@
 import { api } from "../axios/axios";
 
-
 class user {
-  
   constructor() {
     this.headersJson = {
       headers: {
@@ -25,11 +23,29 @@ class user {
         method: "post",
         data,
       });
-      console.log(resp);
-      return resp?.data;
+      if (resp) {
+       console.log(data)
+        return this.loginUser(data);
+      } else {
+        return resp?.data;
+      }
     } catch (error) {
+      throw error.response?.data.errors;
+    }
+  };
+
+  loginUser = async (data) => {
+    try {
+      const resp = await api({
+        url: "users/login",
+        method: "post",
+        data
+      });
+      console.log(resp?.data);
+      return resp?.data;
      
-  throw error.response?.data.errors;
+    } catch (error) {
+      throw error.response?.data.errors;
     }
   };
 }

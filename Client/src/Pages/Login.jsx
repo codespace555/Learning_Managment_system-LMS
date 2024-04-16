@@ -5,11 +5,25 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { MdEmojiPeople } from "react-icons/md";
+import authUser from "../Controller/User.js";
+import { toast } from "react-toastify";
 
 function Login() {
-  const [error, setError] = useState("");
   const { register, handleSubmit } = useForm();
+  const handelSumbit = async(data) => {
+    try {
+      const loginuser = await authUser.loginUser(data)
+     
+      toast.success(`Welcome back ${loginuser?.data.user.fullName}`)
+    } catch (error) {
+     toast.error(error)
+
+      
+    }
+      
+  } 
   return (
+    
     <>
       <div
         className={` max-w-lg rounded-lg p-10 border bg-slate-800/80 border-black/10 `}
@@ -29,12 +43,12 @@ function Login() {
           </Link>
           .
         </p>
-        {error && <p className=" text-red-500  text-center">{error}</p>}
+        
         <OAuthbtn icon={<FcGoogle />} oauth="Login With Google" />
         <OAuthbtn icon={<MdEmojiPeople />} oauth="Login With Demo Account" />
 
         <h1 className="mt-2 text-center text-base text-gray-200">or</h1>
-        <form onSubmit={handleSubmit()} className="mt-8">
+        <form onSubmit={handleSubmit(handelSumbit)} className="mt-8">
           
           <div className="space-y-5">
             <Input

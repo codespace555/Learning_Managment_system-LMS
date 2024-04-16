@@ -5,13 +5,16 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import authUser from "../Controller/User.js";
+import { toast } from "react-toastify";
 
 function Register() {
-  const [error, setError] = useState("");
+
   const { register, handleSubmit } = useForm();
 
   const onSubmit = async (data) => {
+  
     try {
+
       const formData = new FormData();
       formData.append("fullName", data.fullName);
       formData.append("email", data.email);
@@ -19,10 +22,12 @@ function Register() {
       formData.append("avatar", data.avatar[0]);
 
       const response = await authUser.createUser(formData);
-      console.log(response);
+ 
       console.log(response?.data);
+      toast.success(response?.message);
     } catch (error) {
-      setError(error);
+      toast.error(error);
+
     }
   };
 
@@ -47,7 +52,6 @@ function Register() {
             </Link>
             .
           </p>
-          {error && <p className=" text-red-500  text-center">{error}</p>}
           <OAuthbtn icon={<FcGoogle />} oauth="Register With Google" />
 
           <h1 className="mt-2 text-center text-base text-gray-200">or</h1>

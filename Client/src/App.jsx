@@ -3,6 +3,8 @@ import Footer from "./Components/Footer";
 import Header from "./Components/Header";
 import Navbar from "./Components/Navbar";
 import Home from "./Pages/Home";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   QueryClient,
   QueryClientProvider,
@@ -22,6 +24,7 @@ const queryClient = new QueryClient()
         </main>
         <Footer />
       </div>
+      <ToastContainer />
       </QueryClientProvider>
     </>
   );
