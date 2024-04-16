@@ -1,20 +1,7 @@
 import { api } from "../axios/axios";
 
 class user {
-  constructor() {
-    this.headersJson = {
-      headers: {
-        "content-type": "application/json",
-      },
-      withCredentials: true,
-    };
-    this.headersfromData = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      withCredentials: true,
-    };
-  }
+ 
 
   createUser = async (data) => {
     try {
@@ -22,6 +9,10 @@ class user {
         url: "users/register",
         method: "post",
         data,
+        headers: {
+          "content-type": "application/json",
+        },
+        withCredentials:true
       });
       if (resp) {
        console.log(data.get("email"))
@@ -39,7 +30,12 @@ class user {
       const resp = await api({
         url: "users/login",
         method: "post",
-        data
+        data,
+        headers: {
+          "content-type": "application/json",
+          "Authorization":"Bearer "+localStorage.getItem("accessToken")
+        },
+        withCredentials:true
       });
       console.log(resp?.data);
       return resp?.data;
@@ -55,6 +51,7 @@ class user {
         url: "users/profile",
         method: "get",
       });
+      console.log(resp?.data);
       return resp?.data;
     } catch (error) {
       throw error.response?.data.errors;

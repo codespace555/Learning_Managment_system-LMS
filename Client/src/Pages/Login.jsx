@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Input, OAuthbtn } from "../Components/components.js";
 import Logo from "../Components/Logo.jsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { MdEmojiPeople } from "react-icons/md";
@@ -10,20 +10,30 @@ import { toast } from "react-toastify";
 
 function Login() {
   const { register, handleSubmit } = useForm();
-  const handelSumbit = async(data) => {
+  const navigate = useNavigate();
+  const handelSumbit = async (data) => {
     try {
-      const loginuser = await authUser.loginUser(data)
-     
-      toast.success(`Welcome back ${loginuser?.data.user.fullName}`)
+      const loginuser = await authUser.loginUser(data);
+      if (loginuser) {
+        toast.success(`Welcome back ${loginuser?.data.user.fullName}`);
+        localStorage.setItem(
+          "accessToken",
+          JSON.stringify(loginuser?.data?.accessToken)
+        );
+        localStorage.setItem(
+          "refreshToken",
+          JSON.stringify(loginuser?.data?.refreshToken)
+        );
+        const user = await authUser.getUser();
+        console.log(user)
+        localStorage.setItem("currentUser", JSON.stringify(user?.data));
+        navigate("/");
+      }
     } catch (error) {
-     toast.error(error)
-
-      
+      toast.error(error);
     }
-      
-  } 
+  };
   return (
-    
     <>
       <div
         className={` max-w-lg rounded-lg p-10 border bg-slate-800/80 border-black/10 `}
@@ -43,13 +53,12 @@ function Login() {
           </Link>
           .
         </p>
-        
+
         <OAuthbtn icon={<FcGoogle />} oauth="Login With Google" />
         <OAuthbtn icon={<MdEmojiPeople />} oauth="Login With Demo Account" />
 
         <h1 className="mt-2 text-center text-base text-gray-200">or</h1>
         <form onSubmit={handleSubmit(handelSumbit)} className="mt-8">
-          
           <div className="space-y-5">
             <Input
               type="email"
