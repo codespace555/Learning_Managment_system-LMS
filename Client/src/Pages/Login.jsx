@@ -62,6 +62,17 @@ function Login() {
             Login
           </button>
         </form>
+        <p className="mt-2 text-center text-base text-gray-200">
+          Forgot your password?
+          <Link
+            to="/account/forgotyourpassword"
+            className="font-medium hover:text-blue-900 text-blue-500 transition duration-150 ease-in-out"
+          >
+            {" "}
+            Reset Password{" "}
+          </Link>
+          .
+        </p>
       </div>
     </>
   );

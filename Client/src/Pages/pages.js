@@ -6,6 +6,7 @@ import Course from "./Course";
 import Typeing from "./Typeing";
 import Halloffame from "./Halloffame";
 import About from "./About";
+import ForgotPassword from "./ForgotPassword";
 
 
-export {Home,Login,Register,Account,Course,Typeing,Halloffame,About};  //把各
+export {Home,Login,Register,Account,Course,Typeing,Halloffame,About,ForgotPassword};  //把各
