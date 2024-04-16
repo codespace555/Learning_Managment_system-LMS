@@ -23,7 +23,11 @@ const generateAccessAndRefreshToken = async (userId) => {
 
     return { accessToken, refreshToken };
   } catch (err) {
-    throw new ApiError(500, "something went wrong while genrating token");
+    throw res
+      .status(500)
+      .json(
+        new ApiError(500, null, "something went wrong while genrating token")
+      );
   }
 };
 
@@ -33,18 +37,21 @@ const register = asyncHandler(async (req, res) => {
   const { fullName, email, password } = req.body;
 
   if ([fullName, email, password].some((field) => field?.trim() === "")) {
-    throw new ApiError(400, "All Field Required");
+    throw res.status(400).json(new ApiError(400, null, "All Field Required"));
   }
   const userExist = await User.findOne({ email });
 
   if (userExist) {
-    throw new ApiError(400, "User Already Exists");
+    throw res.status(400).json(new ApiError(400, null, "User Already Exists"));
   }
 
   const avatarLocalPath = await req.files?.avatar[0].path;
-  const avatar = await uploadOncloudinary(avatarLocalPath,"LMS_avatar");
+  console.log(avatarLocalPath);
+  const avatar = await uploadOncloudinary(avatarLocalPath, "LMS_avatar");
   if (!avatarLocalPath) {
-    throw new ApiError(400, "Avatar file is required");
+    throw res
+      .status(400)
+      .json(new ApiError(400, null, "Avatar file is required"));
   }
 
   const user = await User.create({
@@ -62,7 +69,9 @@ const register = asyncHandler(async (req, res) => {
   );
 
   if (!createUser) {
-    throw new ApiError(500, "Server Error: Unable to Create User");
+    throw res
+      .status(500)
+      .json(new ApiError(401, null, "Error: Unable to Create User"));
   }
   res.status(200).json(new ApiResponse(200, user, "User create Sucessfully"));
 });
@@ -71,16 +80,16 @@ const register = asyncHandler(async (req, res) => {
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   if (!email && !password) {
-    throw new ApiError(400, "All Field Required");
+    throw res.status(401).json(new ApiError(401, null, "All Field Required"));
   }
 
   const user = await User.findOne({ email });
   if (!user) {
-    throw new ApiError(401, "Invalid Credentials");
+    throw res.status(401).json(new ApiError(401, null, "Invalid Credentials"));
   }
   const isPasswordValid = await user.isPasswordCorret(password);
   if (!isPasswordValid) {
-    throw new ApiError(401, "Invalid Credentials");
+    throw res.status(401).json(new ApiError(401, null, "Invalid Credentials"));
   }
   const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
     user._id
@@ -137,24 +146,26 @@ const getProfile = asyncHandler(async (req, res) => {
 const updateUserAvatar = asyncHandler(async (req, res) => {
   const avatarLocalPath = req.files?.avatar[0].path;
   if (!avatarLocalPath) {
-    throw new ApiError(400, "No image provided");
+    throw res.status(400).json(new ApiError(400, null, "No image provided"));
   }
   const user = req.user;
 
   if (!user) {
-    throw new Error("User not found");
+    throw res.status(400).json(new ApiError(400, null, "User not found"));
   }
 
   try {
     // If user has an existing avatar, delete it from Cloudinary
     if (user.avatar && user.avatar.public_id) {
-      await fileDelete(user.avatar.public_id); 
+      await fileDelete(user.avatar.public_id);
     }
 
     // Upload new avatar to Cloudinary
-    const avatar = await uploadOncloudinary(avatarLocalPath,"LMS_avatar");
+    const avatar = await uploadOncloudinary(avatarLocalPath, "LMS_avatar");
     if (!avatar) {
-      throw new ApiError(400, "Failed to upload avatar image");
+      throw res
+        .status(400)
+        .json(new ApiError(400, null, "Failed to upload avatar image"));
     }
 
     // Update user document with new avatar details
@@ -178,7 +189,9 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
   } catch (error) {
     // Handle any errors
     console.error("Error updating avatar:", error);
-    throw new ApiError(500, "Internal server error");
+    throw res
+      .status(500)
+      .json(new ApiError(500, null, "Internal server error"));
   }
 });
 
@@ -188,16 +201,16 @@ const forgotPassword = asyncHandler(async (req, res) => {
   try {
     const { email } = req.body;
     if (!email) {
-      throw new ApiError(400, "Please provide an email address");
+      throw res.status(400).json(new ApiError(400, null,"Please provide an email address"));
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      throw new ApiError(404, "Email does not exist");
+      throw res.status(404).json(new ApiError(404,null, "Email does not exist"));
     }
     const resetToken = await user.getResetPasswordToken();
     if (!resetToken) {
-      throw new ApiError(400, "something wents wrong to gen reset Token");
+      throw res.status(400).json(new ApiError(400, null,"something wents wrong to gen reset Token"));
     }
 
     await user.save({ validateBeforeSave: false });
@@ -278,7 +291,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
       );
   } catch (error) {
     console.log("error");
-    throw new ApiError(500, error);
+    throw res.status(500).json(new ApiError(500, null,"sever error"));
   }
 });
 
@@ -292,7 +305,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   console.log(decryptedString);
 
   if (!password) {
-    throw new ApiError(400, "Password is required");
+    throw res.status(400).json(new ApiError(400,null, "Password is required"));
   }
 
   const user = await User.findOne({
@@ -301,7 +314,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   });
 
   if (!user) {
-    throw new ApiError(404, "Token is invalid or expired, please try again");
+    throw res.status(404).json(new ApiError(404, null,"Token is invalid or expired, please try again"));
   }
 
   const updatedUser = await User.findByIdAndUpdate(
@@ -329,31 +342,31 @@ const changePassword = asyncHandler(async (req, res) => {
   const { oldpassword, newpassword, confirmPassword } = req.body;
 
   if (!(oldpassword && newpassword && confirmPassword)) {
-    throw new ApiError(400, "Please provide all fields");
+    throw res.status(400).json( new ApiError(400, null,"Please provide all fields"));
   }
   // check old password
   const user = await User.findById(req.user._id).select("+password");
   if (!user) {
-    throw new ApiError(400, "Invalid credentials");
+    throw res.status(400).json(new ApiError(400, null,"Invalid credentials"));
   }
   const isPasswordValid = await user.isPasswordCorret(oldpassword);
 
   if (!isPasswordValid) {
-    return next(new ApiError("Invalid old password", 400));
+    throw res.status(400).json(new ApiError( 400 ,null,"Invalid old password"));
   }
 
   // Check if the passwords match
   if (newpassword !== confirmPassword) {
-    throw new ApiError(400, "confirmPassword do not match");
+    throw res.status(400).json(new ApiError(400, null,"confirmPassword do not match"));
   }
   // update password
   user.password = await bcrypt.hash(newpassword, 10);
 
-  res.status(200).json((new ApiResponse(200, true,"Password has been successfully changed")));
-
-})
+  res
+    .status(200)
+    .json(new ApiResponse(200, true, "Password has been successfully changed"));
+});
 // ......................................................................
-
 
 export {
   register,
@@ -363,5 +376,5 @@ export {
   updateUserAvatar,
   forgotPassword,
   resetPassword,
-  changePassword
+  changePassword,
 };
