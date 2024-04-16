@@ -24,8 +24,8 @@ class user {
         data,
       });
       if (resp) {
-       console.log(data)
-        return this.loginUser(data);
+       console.log(data.get("email"))
+        return this.loginUser({email:data.get("email"), password:data.get("password")});
       } else {
         return resp?.data;
       }
@@ -48,6 +48,19 @@ class user {
       throw error.response?.data.errors;
     }
   };
+
+  getUser = async() => {
+    try {
+      const resp = await api({
+        url: "users/profile",
+        method: "get",
+      });
+      return resp?.data;
+    } catch (error) {
+      throw error.response?.data.errors;
+    }
+
+  }
 }
 
 const authUser = new user();
