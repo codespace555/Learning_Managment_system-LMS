@@ -6,6 +6,7 @@ import { fileDelete, uploadOncloudinary } from "../utils/cloudinary.js";
 import sendEmail from "../utils/sendEmail.js";
 import Cryptr from "cryptr";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const options = {
   httpOnly: true,
@@ -367,6 +368,51 @@ const changePassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, true, "Password has been successfully changed"));
 });
 // ......................................................................
+const refreshAccessToken = asyncHandler(async (req, res) => {
+  const incommingToken = req.cookies?.refreshToken || req.body.refreshToken;
+
+
+  if (!incommingToken) {
+    throw new ApiError(401, "unauthorized request");
+  }
+
+  try {
+    const decodedToken = jwt.verify(incommingToken, process.env.REFRESH_TOKEN_SECRET);
+
+    const user = await User.findById(decodedToken?._id);
+
+    if (!user) {
+      throw new ApiError(401, "Invalid refresh token");
+    }
+
+    if (incommingToken !== user?.refreshToken) {
+      throw new ApiError(401, "refresh token is expaired or used");
+    }
+
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+
+    const { accessToken, newRefreshtoken } = generateAccessAndRefreshToken(
+      user._id
+    );
+
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", newRefreshtoken, options)
+      .json(
+        new ApiResponse(
+          200,
+          { accessToken, refreshToken: newRefreshtoken },
+          "Access token refreshed"
+        )
+      );
+  } catch (error) {
+    throw new ApiError(401, error.message || "Invalid  token");
+  }
+});
 
 export {
   register,
@@ -377,4 +423,5 @@ export {
   forgotPassword,
   resetPassword,
   changePassword,
+  refreshAccessToken
 };

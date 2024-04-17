@@ -7,27 +7,25 @@ import { FcGoogle } from "react-icons/fc";
 import { MdEmojiPeople } from "react-icons/md";
 import authUser from "../Controller/User.js";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { login } from "../store/authSlice.js";
 
 function Login() {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const handelSumbit = async (data) => {
     try {
       const loginuser = await authUser.loginUser(data);
       if (loginuser) {
         toast.success(`Welcome back ${loginuser?.data.user.fullName}`);
-        localStorage.setItem(
-          "accessToken",
-          JSON.stringify(loginuser?.data?.accessToken)
-        );
-        localStorage.setItem(
-          "refreshToken",
-          JSON.stringify(loginuser?.data?.refreshToken)
-        );
+        console.log(loginuser)
         const user = await authUser.getUser();
         console.log(user)
-        localStorage.setItem("currentUser", JSON.stringify(user?.data));
-        navigate("/");
+        if (user) {
+          dispatch(login({user}));
+          navigate("/");
+        }
       }
     } catch (error) {
       toast.error(error);

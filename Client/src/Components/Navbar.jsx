@@ -7,8 +7,15 @@ import { FaKeyboard } from "react-icons/fa";
 import { LuFrame } from "react-icons/lu";
 import { FcAbout } from "react-icons/fc";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function Navbar() {
+  const userData = useSelector((state) => state.auth.userData);
+  const authStatus = useSelector((state) => state.auth.status);
+
+  console.log(userData)
+  console.log(authStatus)
+
   const nav = [
     {
       name: "Home",

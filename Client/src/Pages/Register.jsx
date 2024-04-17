@@ -1,17 +1,23 @@
-import React, { useState } from "react";
-import { Input, OAuthbtn } from "../Components/components.js";
-import Logo from "../Components/Logo.jsx";
-import { Link } from "react-router-dom";
+import React, { useState, Suspense, lazy } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
-import authUser from "../Controller/User.js";
 import { toast } from "react-toastify";
+import authUser from "../Controller/User.js";
+import Logo from "../Components/Logo.jsx";
+// import { Input, OAuthbtn } from "../Components/components.js";
+
+const Input = lazy(() => import("../Components/Input"));
+const OAuthbtn = lazy(() => import("../Components/OAuthbtn"));
 
 function Register() {
   const { register, handleSubmit } = useForm();
+  const navigate = useNavigate();
+  const [isPending, setIsPending] = useState(false);
 
   const onSubmit = async (data) => {
     try {
+      setIsPending(true);
       const formData = new FormData();
       formData.append("fullName", data.fullName);
       formData.append("email", data.email);
@@ -20,10 +26,20 @@ function Register() {
 
       const response = await authUser.createUser(formData);
 
+      if (response) {
+        toast.success(`Welcome back ${response?.data.user.fullName}`);
+        const user = await authUser.getUser();
+        console.log(user);
+        if (user) {
+          navigate("/");
+        }
+      }
       console.log(response?.data);
       toast.success(response?.message);
     } catch (error) {
       toast.error(error);
+    } finally {
+      setIsPending(false); // Reset pending state after async operation
     }
   };
 
@@ -52,54 +68,64 @@ function Register() {
 
           <h1 className="mt-2 text-center text-base text-gray-200">or</h1>
           <form onSubmit={handleSubmit(onSubmit)} className="">
-            
-          <div className="md:space-y-5 mt-5 ml-20 ">
-                <input
+            <div className="md:space-y-5 mt-5 ml-20 ">
+              <Suspense fallback={<div>Loading...</div>}>
+                <Input
                   type="file"
                   className="file-input file-input-bordered file-input-secondary w-full max-w-xs"
                   {...register("avatar", {
                     required: true,
                   })}
                 />
-              </div>
+              </Suspense>
+            </div>
             <div className="flex flex-col justify-center   w-full">
               <div>
                 <div className="space-y-5">
-                  <Input
-                    type="text"
-                    label="enter your name"
-                    {...register("fullName", {
-                      required: true,
-                    })}
-                  />
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <Input
+                      type="text"
+                      label="enter your name"
+                      {...register("fullName", {
+                        required: true,
+                      })}
+                    />
+                  </Suspense>
                 </div>
                 <div className="space-y-5">
-                  <Input
-                    type="email"
-                    label="mail@mail.com"
-                    {...register("email", {
-                      required: true,
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <Input
+                      type="email"
+                      label="mail@mail.com"
+                      {...register("email", {
+                        required: true,
 
-                      validate: {
-                        matchPatern: (value) =>
-                          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
-                            value
-                          ) || "Email address must be a valid address",
-                      },
-                    })}
-                  />
+                        validate: {
+                          matchPatern: (value) =>
+                            /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
+                              value
+                            ) || "Email address must be a valid address",
+                        },
+                      })}
+                    />
+                  </Suspense>
                 </div>
                 <div className="space-y-1">
-                  <Input
-                    label="Password"
-                    type="password"
-                    {...register("password", { required: true })}
-                  />
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <Input
+                      label="Password"
+                      type="password"
+                      {...register("password", { required: true })}
+                    />
+                  </Suspense>
                 </div>
               </div>
             </div>
-            <button className="btn btn-outline btn-secondary flex-none w-full  lg:block mt-5">
-              Register
+            <button
+              className="btn btn-outline btn-secondary flex-none w-full  lg:block mt-5"
+              disabled={isPending} // Disable button when pending state is true
+            >
+              {isPending ? 'Registering...' : 'Register'}
             </button>
           </form>
         </div>

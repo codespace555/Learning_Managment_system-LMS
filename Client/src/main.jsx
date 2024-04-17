@@ -3,14 +3,30 @@ import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-
-import { About, Account, Course, ForgotPassword, Halloffame, Home, Login, Register, Typeing } from "./Pages/pages.js";
-
+import { Provider } from "react-redux";
+import {
+  About,
+  Account,
+  Course,
+  ForgotPassword,
+  Halloffame,
+  Home,
+  Login,
+  Register,
+  Typeing,
+} from "./Pages/pages.js";
+import store from "./store/store.js";
+import AutoLogin from "./Components/AutoLogin.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: (
+      <App>
+        {" "}
+        <AutoLogin />
+      </App>
+    ),
     children: [
       {
         path: "/",
@@ -31,33 +47,33 @@ const router = createBrowserRouter([
           },
           {
             path: "forgotyourpassword",
-            element: <ForgotPassword/>,
+            element: <ForgotPassword />,
           },
         ],
       },
 
       {
-        path:"/course",
-        element:<Course/>
+        path: "/course",
+        element: <Course />,
       },
       {
-        path:"/typing",
-        element:<Typeing/>
+        path: "/typing",
+        element: <Typeing />,
       },
       {
-        path:"/halloffame",
-        element:<Halloffame/>
+        path: "/halloffame",
+        element: <Halloffame />,
       },
       {
-        path:"/about",
-        element:<About/>
-      }
+        path: "/about",
+        element: <About />,
+      },
     ],
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
- 
+  <Provider store={store}>
     <RouterProvider router={router} />
-  
+  </Provider>
 );

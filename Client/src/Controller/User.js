@@ -1,5 +1,6 @@
 import { api } from "../axios/axios";
 
+
 class user {
  
 
@@ -33,23 +34,32 @@ class user {
         data,
         headers: {
           "content-type": "application/json",
-          "Authorization":"Bearer "+localStorage.getItem("accessToken")
         },
         withCredentials:true
       });
-      console.log(resp?.data);
-      return resp?.data;
+      const accessToken = resp?.data?.data.accessToken;
+      const refreshToken = resp?.data?.data.refreshToken;
+
      
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+   
+      return resp?.data;
     } catch (error) {
       throw error.response?.data.errors;
     }
   };
 
   getUser = async() => {
+    const accessToken = localStorage.getItem('accessToken');
+    console.log(accessToken)
     try {
       const resp = await api({
         url: "users/profile",
         method: "get",
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
       });
       console.log(resp?.data);
       return resp?.data;
@@ -57,6 +67,26 @@ class user {
       throw error.response?.data.errors;
     }
 
+  }
+
+  
+  loginWithToken = async (token) => {
+    try {
+    
+      const resp = await api({
+        url: "users/refresh-token", 
+        method: "post",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        withCredentials:true
+      });
+      console.log(resp?.data)
+
+      return resp?.data;
+    } catch (error) {
+      throw error.response?.data.errors;
+    }
   }
 }
 
