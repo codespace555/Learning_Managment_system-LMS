@@ -1,31 +1,37 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Footer from "./Components/Footer";
 import Navbar from "./Components/Navbar";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query'
+import { ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import authUser from "./Controller/User";
+import { login } from "./store/authSlice";
 
 function App() {
-  
-const queryClient = new QueryClient()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    authUser.getUser().then((user) => {
+      if (user) {
+        dispatch(login(user));
+        navigate("/");
+      }
+    });
+  }, []);
+
   return (
     <>
-     <QueryClientProvider client={queryClient}>
       <div className="bg-gray-300 w-full dark:bg-[#18202c] h-auto overflow-hidden">
         <Navbar />
         <main className="h-screen">
-
-       <Outlet/>
+          <Outlet />
         </main>
         <Footer />
       </div>
-      
+
       <ToastContainer />
-      </QueryClientProvider>
     </>
   );
 }

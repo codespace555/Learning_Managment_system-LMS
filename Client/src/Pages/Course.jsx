@@ -1,9 +1,17 @@
 import React from 'react'
+import authUser from '../Controller/User'
+import { login } from '../store/authSlice'
 
 function Course() {
+  const handel = () =>{
+    authUser.getUser().then((user)=>{
+      console.log(login(user))
+    })
+  }
+  
   return (
     <div>
-      <h1>course</h1>
+      <button onClick={handel}>getUser</button>
     </div>
   )
 }

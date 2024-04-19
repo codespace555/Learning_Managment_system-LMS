@@ -1,31 +1,29 @@
-import React from "react";
+import React ,{Suspense, lazy} from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import {
-  About,
-  Account,
-  Course,
-  ForgotPassword,
-  Halloffame,
-  Home,
-  Login,
-  Register,
-  Typeing,
-} from "./Pages/pages.js";
 import store from "./store/store.js";
+import Loader from "./Components/Loader.jsx";
 import AutoLogin from "./Components/AutoLogin.jsx";
+const Home = React.lazy(() => import("./Pages/Home"));
+const Account = React.lazy(() => import("./Pages/Accoutn"));
+const Course = React.lazy(() => import("./Pages/Course"));
+const Typeing = React.lazy(() => import("./Pages/Typeing"));
+const Halloffame = React.lazy(() => import("./Pages/Halloffame"));
+const About = React.lazy(() => import("./Pages/About"));
+const Login = React.lazy(() => import("./Pages/Login"));
+const Register = React.lazy(() => import("./Pages/Register"));
+const ForgotPassword = React.lazy(() => import("./Pages/ForgotPassword"));
+
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <App>
-        {" "}
-        <AutoLogin />
-      </App>
+      <App/>
+      
     ),
     children: [
       {
@@ -74,6 +72,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
+    <Suspense fallback={<div><Loader/></div>}>
     <RouterProvider router={router} />
+    </Suspense>
   </Provider>
 );

@@ -8,6 +8,7 @@ import { LuFrame } from "react-icons/lu";
 import { FcAbout } from "react-icons/fc";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import MyProfile from "./MyProfile";
 
 function Navbar() {
   const userData = useSelector((state) => state.auth.userData);
@@ -100,11 +101,18 @@ function Navbar() {
                 />
               </div>
               <ul>
-                <Link to="/account/login">
-                  <button className="btn btn-outline btn-secondary flex-none  ">
-                    Login/Register
-                  </button>
-                </Link>
+                {
+                  authStatus?
+                  <Link to="/">
+                   <MyProfile/>
+                  </Link>
+                  :
+                  <Link to="/account/login">
+                    <button className="btn btn-outline btn-secondary flex-none  ">
+                      Login/Register
+                    </button>
+                  </Link>
+                }
               </ul>
             </div>
             <div className="flex-none  hidden lg:block ">

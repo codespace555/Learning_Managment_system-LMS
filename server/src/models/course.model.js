@@ -59,6 +59,7 @@ const courseSchema = new Schema(
       type: String,
       required: [true, "Course instructor name is required"],
     },
+    
   },
   {
     timestamps: true,

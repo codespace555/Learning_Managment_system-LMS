@@ -369,7 +369,7 @@ const changePassword = asyncHandler(async (req, res) => {
 });
 // ......................................................................
 const refreshAccessToken = asyncHandler(async (req, res) => {
-  const incommingToken = req.cookies?.refreshToken || req.body.refreshToken;
+  const incommingToken = req.cookies?.refreshToken || req.body?.refreshToken;
 
 
   if (!incommingToken) {

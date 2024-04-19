@@ -23,7 +23,7 @@ function Login() {
         const user = await authUser.getUser();
         console.log(user)
         if (user) {
-          dispatch(login({user}));
+          dispatch(login(user));
           navigate("/");
         }
       }

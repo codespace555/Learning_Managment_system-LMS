@@ -4,6 +4,8 @@ import { Course } from "../models/course.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { fileDelete, uploadOncloudinary } from "../utils/cloudinary.js";
 import { uploadVideo } from "../utils/uploadVideo.js";
+import generateQueryVector from "../utils/genEmmaded.js";
+
 
 // createCourse....................................................................
 const createCourse = asyncHandler(async (req, res) => {
@@ -44,6 +46,7 @@ const createCourse = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, course, "course create Sucessfully"));
 });
 
+
 const getAllCoruses = asyncHandler(async (req, res) => {
   const courses = await Course.find({}).select("-lectures");
   let course = [...courses];
@@ -52,10 +55,7 @@ const getAllCoruses = asyncHandler(async (req, res) => {
 
 const SearchCourse = asyncHandler(async (req, res) => {
   let searchKeyword = req.query.search;
-  let page = parseInt(req.query.page) || 1;
-  let limit = parseInt(req.query.limit) || 10;
-  console.log("Search Keyword : ", searchKeyword);
-  // Checking the keyword is empty or not
+
   if (
     !searchKeyword ||
     typeof searchKeyword !== "string" ||
@@ -63,30 +63,61 @@ const SearchCourse = asyncHandler(async (req, res) => {
   ) {
     throw new ApiError(400, "Please provide a valid non-empty search keyword.");
   }
+  try {
+    // Generate the query vector from the query text
+    const queryVector = await generateQueryVector(searchKeyword);
 
-  const searchWords = searchKeyword.trim().toLowerCase().split(/\s+/);
+    // Define the aggregation pipeline
+    const agg = [
+        {
+        
+            $vectorSearch: {
+                index: 'courses_vector_index', 
+                path: 'embedding', 
+                queryVector: queryVector, 
+                numCandidates: 100, 
+                limit: 5, 
+            },
+        },
+        {
+           
+            $project: {
+                _id: 0,
+                title: 1,
+                description: 1,
+                category: 1,
+                createdBy: 1,
+                score: {
+                    $meta: 'vectorSearchScore', 
+                },
+            },
+        },
+    ];
 
-  const searchConditions = searchWords.map((word) => ({
-    title: { $regex: new RegExp(word, "i") },
-  }));
+   
+    const results = await Course.aggregate(agg).toArray();
 
-  const count = await Course.countDocuments({ $or: searchConditions });
-  const totalPages = Math.ceil(count / limit);
-  const set = limit * (page - 1);
+    if (results) {
+      throw new ApiError(400, "Please provide a valid non-empty search keyword.")
+      
+    }
+    // Return the search results
+    res
+    .status(200)
+    .json(new ApiResponse(200, results, "course create Sucessfully"));
+  
+} catch (error) {
+    console.error('Error searching for courses:', error);
+    throw error;
+}
 
-  const courses = await Course.find({ $or: searchConditions }, null, {
-    skip: set,
-    limit: limit,
-  }).exec();
-  if (courses.length === 0) {
-    return res.status(404).json({ error: "No products found" });
-  }
- 
-  res.status(200).json(new ApiResponse(200, {
-    totalResults: count,
-    totalPages:totalPages,
-    courses: courses,
-  }, "Successfully searched"));
+
+
+
+
+
+
+
 });
 
 const updateCourse = asyncHandler(async (req, res) => {
@@ -292,7 +323,6 @@ const updatelecturesonCourse = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, course, " course update successfully"));
 });
 
-
 const deleteCourselecture = asyncHandler(async (req, res) => {
   const { courseId, lectureId } = req.params;
   console.log(lectureId, courseId);
@@ -303,13 +333,11 @@ const deleteCourselecture = asyncHandler(async (req, res) => {
     throw new ApiError(400, "lectureId Field Required");
   }
 
-
   const course = await Course.findById(courseId);
 
   if (!course) {
     throw new ApiError(400, "Course not found");
   }
-
 
   const lectureIndex = course.lectures.findIndex(
     (lecture) => lecture._id.toString() === lectureId.toString()
@@ -318,20 +346,17 @@ const deleteCourselecture = asyncHandler(async (req, res) => {
     throw new ApiError(400, "lecture not found");
   }
 
-
   await fileDelete(course.lectures[lectureIndex].lecture.public_id);
   await fileDelete(course.lectures[lectureIndex].lecturesThumbnail.public_id);
 
-  course.lectures.splice(lectureIndex, 1)
+  course.lectures.splice(lectureIndex, 1);
 
   await course.save();
 
   res
-  .status(200)
-  .json(new ApiResponse(200, null, "Deleted the course successfully!"));
-
-
-})
+    .status(200)
+    .json(new ApiResponse(200, null, "Deleted the course successfully!"));
+});
 
 export {
   createCourse,
@@ -341,5 +366,5 @@ export {
   updateCourse,
   deleteCourse,
   updatelecturesonCourse,
-  deleteCourselecture
+  deleteCourselecture,
 };

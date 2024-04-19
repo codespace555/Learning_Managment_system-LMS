@@ -51,15 +51,14 @@ class user {
   };
 
   getUser = async() => {
-    const accessToken = localStorage.getItem('accessToken');
-    console.log(accessToken)
     try {
       const resp = await api({
         url: "users/profile",
         method: "get",
         headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
+          "content-type": "application/json",
+        },
+        withCredentials:true
       });
       console.log(resp?.data);
       return resp?.data;
