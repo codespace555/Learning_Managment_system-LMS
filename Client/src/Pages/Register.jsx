@@ -52,7 +52,7 @@ function Register() {
     <div>
       <>
         <div
-          className={`mx-auto  max-w-lg rounded-lg p-10 border bg-slate-800/80 border-black/10 `}
+          className={`max-w-lg w-full rounded-lg p-10 border bg-slate-800/80 border-black/10 `}
         >
           <span className=" ">
             <Logo />
@@ -84,7 +84,7 @@ function Register() {
                 />
               </Suspense>
             </div>
-            <div className="flex flex-col justify-center   w-full">
+            <div className="flex flex-col justify-center w-full">
               <div>
                 <div className="space-y-5">
                   <Suspense fallback={<div>Loading...</div>}>
