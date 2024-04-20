@@ -7,6 +7,17 @@ import Typeing from "./Typeing";
 import Halloffame from "./Halloffame";
 import About from "./About";
 import ForgotPassword from "./ForgotPassword";
+import Reset from "./Reset";
 
-
-export {Home,Login,Register,Account,Course,Typeing,Halloffame,About,ForgotPassword};  //把各
+export {
+  Home,
+  Login,
+  Register,
+  Account,
+  Course,
+  Typeing,
+  Halloffame,
+  About,
+  ForgotPassword,
+  Reset,
+};

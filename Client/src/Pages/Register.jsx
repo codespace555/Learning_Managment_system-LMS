@@ -5,6 +5,8 @@ import { FcGoogle } from "react-icons/fc";
 import { toast } from "react-toastify";
 import authUser from "../Controller/User.js";
 import Logo from "../Components/Logo.jsx";
+import { useDispatch } from "react-redux";
+import { login } from "../store/authSlice.js";
 // import { Input, OAuthbtn } from "../Components/components.js";
 
 const Input = lazy(() => import("../Components/Input"));
@@ -14,8 +16,10 @@ function Register() {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const [isPending, setIsPending] = useState(false);
+  const dispatch = useDispatch();
 
   const onSubmit = async (data) => {
+    console.log(data);
     try {
       setIsPending(true);
       const formData = new FormData();
@@ -31,6 +35,7 @@ function Register() {
         const user = await authUser.getUser();
         console.log(user);
         if (user) {
+          dispatch(login(user));
           navigate("/");
         }
       }
@@ -125,7 +130,7 @@ function Register() {
               className="btn btn-outline btn-secondary flex-none w-full  lg:block mt-5"
               disabled={isPending} // Disable button when pending state is true
             >
-              {isPending ? 'Registering...' : 'Register'}
+              {isPending ? "Registering..." : "Register"}
             </button>
           </form>
         </div>

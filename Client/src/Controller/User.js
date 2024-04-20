@@ -11,9 +11,8 @@ class user {
         method: "post",
         data,
         headers: {
-          "content-type": "application/json",
-        },
-        withCredentials:true
+          "content-type": "multipart/form-data",
+        }
       });
       if (resp) {
        console.log(data.get("email"))
@@ -76,7 +75,7 @@ class user {
         url: "users/refresh-token", 
         method: "post",
         headers: {
-          "Authorization": `Bearer ${token}`
+          "content-type": "application/json",
         },
         withCredentials:true
       });
@@ -87,6 +86,43 @@ class user {
       throw error.response?.data.errors;
     }
   }
+
+  logout = async () => {
+    try {
+      const resp = await api({
+        url: "users/logout",
+        method: "get",
+        headers: {
+          "content-type": "application/json",
+        },
+        withCredentials:true
+      });
+      console.log("logout")
+      return resp?.data;
+      
+    } catch (error) {
+      throw error.response?.data.errors;
+    }
+  }
+
+
+forgotpassword = async(data) =>{
+  try {
+    const resp = await api({
+      url: "users/reset",
+      method: "post",
+      data,
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    return resp?.data;
+  } catch (error) {
+    throw error.response?.data.errors;
+  }
+}
+
+
 }
 
 const authUser = new user();

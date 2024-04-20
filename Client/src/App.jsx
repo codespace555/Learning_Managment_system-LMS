@@ -25,7 +25,7 @@ function App() {
     <>
       <div className="bg-gray-300 w-full dark:bg-[#18202c] h-auto overflow-hidden">
         <Navbar />
-        <main className="h-screen">
+        <main className="h-auto">
           <Outlet />
         </main>
         <Footer />

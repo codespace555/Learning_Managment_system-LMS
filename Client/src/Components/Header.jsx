@@ -11,8 +11,8 @@ function Header() {
     return () => clearTimeout(intervalId);
   }, []);
   return (
-    <div className="  w-full  h-screen  bg-[#18202c]  md:flex  justify-center items-center ">
-      <div className="  md:w-1/2 lg:w-1/2 p-5 flex gap-5 flex-col ">
+    <div className="  w-full  h-screen  bg-[#18202c]  lg:flex  justify-center items-center ">
+      <div className="  lg:w-1/2  p-5 flex gap-5 flex-col ">
         <h1 className="md:text-4xl text-xl font-extrabold flex w-full z-100">
           Learn Tech Made&nbsp;{" "}
           <span className="text-pink-800 z-100">

@@ -4,7 +4,7 @@ import { Course } from "../models/course.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { fileDelete, uploadOncloudinary } from "../utils/cloudinary.js";
 import { uploadVideo } from "../utils/uploadVideo.js";
-import generateQueryVector from "../utils/genEmmaded.js";
+
 
 
 // createCourse....................................................................
