@@ -122,6 +122,27 @@ forgotpassword = async(data) =>{
   }
 }
 
+resetpassword = async(data) =>{
+  try {
+    const resp = await api({
+      url: "users/reset-password",
+      method: "post",
+      data:{
+        password:data.get("password"),
+        token:data.get("token")
+      },
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    return resp?.data;
+  } catch (error) {
+    throw error.response?.data.errors;
+  }
+}
+
+
+
 
 }
 

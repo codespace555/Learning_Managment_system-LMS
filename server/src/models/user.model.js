@@ -110,7 +110,7 @@ userModel.methods.getResetPasswordToken = function () {
   const encryptedString = cryptr.encrypt(process.env.REFRESH_TOKEN_SECRET);
 
   this.forgotPasswordToken = process.env.REFRESH_TOKEN_SECRET
-  this.forgotPasswordExpiry = Date.now() + 15*60*1000; // 15 minutes
+  this.forgotPasswordExpiry = Date.now() + 5*60*1000; 
 
   return encryptedString;
 };

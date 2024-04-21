@@ -298,8 +298,8 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
 // resetPassword......................................................................
 const resetPassword = asyncHandler(async (req, res) => {
-  const { resetToken } = req.body;
-  const { password } = req.body;
+ 
+  const { password , resetToken } = req.body;
 
   const cryptr = new Cryptr(process.env.REFRESH_TOKEN_SECRET);
   const decryptedString = cryptr.decrypt(resetToken);
