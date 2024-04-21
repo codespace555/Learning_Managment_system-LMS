@@ -1,25 +1,30 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Input from "../Components/Input";
 import authUser from "../Controller/User";
+import { toast } from "react-toastify";
 
 function Reset() {
   const { register, handleSubmit } = useForm();
   const { resetToken } = useParams();
   console.log(resetToken);
-
+const navigate = useNavigate();
   const verifyToken = async (data) => {
-    
+    console.log(data);
    try {
      const resp = await authUser.resetpassword({
        password: data.password,
        resetToken: resetToken,
      });
+     console.log({
+      password: data.password,
+      resetToken: resetToken,
+    });
  
      if (resp) {
        toast.success(resp?.message);
-       navigate("/login");
+       navigate("/account/login");
      }
    } catch (error) {
     toast.error(error);
@@ -39,17 +44,12 @@ function Reset() {
               label="Enter Your New Password"
               {...register("password", {
                 required: true,
-                validate: {
-                  matchPatern: (value) =>
-                    /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
-                    "Email address must be a valid address",
-                },
-              })}
+               })}
             />
           </div>
 
           <button
-            type="submit"
+            
             className="btn btn-outline btn-secondary flex-none w-full  lg:block"
           >
             Reset Password

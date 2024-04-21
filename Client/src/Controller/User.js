@@ -127,10 +127,7 @@ resetpassword = async(data) =>{
     const resp = await api({
       url: "users/reset-password",
       method: "post",
-      data:{
-        password:data.get("password"),
-        token:data.get("token")
-      },
+      data,
       headers: {
         "content-type": "application/json",
       },
