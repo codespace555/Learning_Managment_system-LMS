@@ -36,12 +36,6 @@ class user {
         },
         withCredentials:true
       });
-      const accessToken = resp?.data?.data.accessToken;
-      const refreshToken = resp?.data?.data.refreshToken;
-
-     
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
    
       return resp?.data;
     } catch (error) {
@@ -130,6 +124,22 @@ resetpassword = async(data) =>{
       data,
       headers: {
         "content-type": "application/json",
+      },
+    });
+    return resp?.data;
+  } catch (error) {
+    throw error.response?.data.errors;
+  }
+}
+// eslint-disable-next-line no-unused-vars
+updateUser = async (data) =>{
+  try {
+    const resp = await api({
+      url: "users/update-avatar",
+      method: "post",
+      data,
+      headers: {
+        "content-type": "multipart/form-data"
       },
     });
     return resp?.data;
