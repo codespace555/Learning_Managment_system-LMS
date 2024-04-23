@@ -44,6 +44,7 @@ class user {
   };
 
   getUser = async() => {
+    
     try {
       const resp = await api({
         url: "users/profile",
@@ -82,7 +83,10 @@ class user {
   }
 
   logout = async () => {
+   
+    
     try {
+      
       const resp = await api({
         url: "users/logout",
         method: "get",
@@ -132,7 +136,7 @@ resetpassword = async(data) =>{
   }
 }
 // eslint-disable-next-line no-unused-vars
-updateUser = async (data) =>{
+updateUserAvatar = async (data) =>{
   try {
     const resp = await api({
       url: "users/update-avatar",
@@ -147,10 +151,6 @@ updateUser = async (data) =>{
     throw error.response?.data.errors;
   }
 }
-
-
-
-
 }
 
 const authUser = new user();

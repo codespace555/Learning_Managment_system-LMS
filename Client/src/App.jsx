@@ -1,24 +1,27 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import Footer from "./Components/Footer";
 import Navbar from "./Components/Navbar";
-import { ToastContainer} from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import authUser from "./Controller/User";
 import { login } from "./store/authSlice";
 
 function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const authStatus = useSelector((state) => state.auth.status);
 
   useEffect(() => {
-    authUser.getUser().then((user) => {
-      if (user) {
-        dispatch(login(user));
-        navigate("/");
-      }
-    });
+    const user = authUser.getUser();
+    if (user) {
+      dispatch(login(user));
+      navigate("/");
+    } else {
+      navigate("/login");
+      toast.status("Please Login");
+    }
   }, []);
 
   return (
