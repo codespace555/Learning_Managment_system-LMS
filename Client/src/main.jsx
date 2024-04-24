@@ -17,6 +17,7 @@ const Login = React.lazy(() => import("./Pages/Login"));
 const Register = React.lazy(() => import("./Pages/Register"));
 const ForgotPassword = React.lazy(() => import("./Pages/ForgotPassword"));
 const Reset = React.lazy(() => import("./Pages/Reset"));
+const Profile = React.lazy(() => import("./Pages/Profile"));
 
 
 
@@ -50,6 +51,7 @@ const router = createBrowserRouter([
             element: <ForgotPassword />,
           },
           
+          
         ],
       },
 
@@ -72,6 +74,10 @@ const router = createBrowserRouter([
       {
         path: "/reset-password/:resetToken",
         element: <Reset />,
+      },
+      {
+        path: "myprofile",
+        element:<Profile/> ,
       },
     ],
   },

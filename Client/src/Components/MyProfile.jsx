@@ -6,11 +6,11 @@ import { LuLogOut } from "react-icons/lu";
 import authUser from "../Controller/User";
 import { toast } from "react-toastify";
 import { logout as logoutAction } from "../store/authSlice";
+import { Link } from "react-router-dom";
 
 function MyProfile() {
   const userData = useSelector((state) => state.auth.userData);
   const dispatch = useDispatch();
-
   const logoutuser = async () => {
     console.log("logout");
     const res = await authUser.logout();
@@ -39,9 +39,9 @@ function MyProfile() {
           className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
         >
           <li>
-            <button>
+            <Link to="/myprofile">
               <LiaUserAstronautSolid /> My Profile
-            </button>
+            </Link>
           </li>
 
           <li>
