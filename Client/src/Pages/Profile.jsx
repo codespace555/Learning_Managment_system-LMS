@@ -37,13 +37,10 @@ function Profile() {
   return (
     <div className="p-5 ">
     <h1 className="text-2xl font-bold mb-5">My Profile Dashboard</h1>
-    
     {/* Profile information section */}
+    
     <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-2">User Information</h2>
-        <p className="mb-1">Name: John Doe</p>
-        <p>Email: johndoe@example.com</p>
-        {/* Add more user information as needed */}
+        <input type="file" className="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 avatar"/>
     </div>
     
     {/* Line chart container */}
