@@ -9,11 +9,26 @@ function Profile() {
 
   // Sample data for the line chart (e.g., user activity over time)
   const lineData = {
-    labels: ["25", "24", "22", "20", "19", "5", "3" ,"25", "24", "22", "20", "19", "5", "3"],
+    labels: [
+      "25",
+      "24",
+      "22",
+      "20",
+      "19",
+      "5",
+      "3",
+      "25",
+      "24",
+      "22",
+      "20",
+      "19",
+      "5",
+      "3",
+    ],
     datasets: [
       {
         label: "Speed and Accuracy",
-        data: [65, 59, 80, 0, 56, 55, 40,65, 59, 80, 0, 56, 55, 40],
+        data: [65, 59, 80, 0, 56, 55, 40, 65, 59, 80, 0, 56, 55, 40],
         fill: false,
         backgroundColor: "rgba(75,192,192,1)",
         borderColor: "rgba(75,192,192,1)",
@@ -44,7 +59,6 @@ function Profile() {
           <div className="flex-grow-1 avatar flex gap-4 items-center j">
             <div className="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
               <img src={userData?.data?.avatar?.secure_url} />
-              <span className="indicator-item badge badge-primary">new</span> 
             </div>
 
             <h1 className="text-2xl font-bold ">My Profile </h1>
@@ -143,11 +157,12 @@ function Profile() {
         <h2 className="text-xl font-semibold mb-2">Typing Progress</h2>
         <Line data={lineData} options={chartOptions} />
       </div>
-      <h1 className="text-xl font-semibold my-5 text-center bg-slate-600 p-5 rounded-lg ">Typing Test Leaderboard</h1>
-<div>
-  <LeaderBoard/>
-</div>
-  
+      <h1 className="text-xl font-semibold my-5 text-center bg-slate-600 p-5 rounded-lg ">
+        Typing Test Leaderboard
+      </h1>
+      <div>
+        <LeaderBoard />
+      </div>
     </div>
   );
 }
