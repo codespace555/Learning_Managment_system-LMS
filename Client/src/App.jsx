@@ -18,7 +18,7 @@ function App() {
       if (!authStatus) {
         if (user) {
           dispatch(login(user));
-          navigate("/");
+         console.log(user)
         } else {
           navigate("/login");
           toast.status("Please Login");

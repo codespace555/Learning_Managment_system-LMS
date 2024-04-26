@@ -66,7 +66,7 @@ const getLeaderboard = asyncHandler(async (req, res) => {
   }
   const getAllUser = await leaderboard.map(async (test) => {
     const user = await User.findById(test._id);
-    return { username: user.username, average_speed: entry.averageSpeed };
+    return { username: user.fullName, average_speed: entry.averageSpeed };
   });
 
   if (!getAllUser) {

@@ -14,8 +14,6 @@ function Navbar() {
   const userData = useSelector((state) => state.auth.userData);
   const authStatus = useSelector((state) => state.auth.status);
 
-  console.log(userData);
-  console.log(authStatus);
 
   const nav = [
     {
@@ -51,7 +49,7 @@ function Navbar() {
   ];
   return (
     <>
-      <nav className="w-screen">
+      <nav className="w-screen glass">
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col">
           {/* Navbar */}

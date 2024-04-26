@@ -76,7 +76,7 @@ const router = createBrowserRouter([
         element: <Reset />,
       },
       {
-        path: "myprofile",
+        path: "/profile",
         element:<Profile/> ,
       },
     ],
