@@ -13,9 +13,9 @@ function Header() {
   return (
     <div className="  w-full  h-screen  bg-[#18202c]  lg:flex  justify-center items-center ">
       <div className="  lg:w-1/2  p-5 flex gap-5 flex-col ">
-        <h1 className="md:text-4xl text-xl font-extrabold flex w-full z-100">
+        <h1 className="md:text-4xl text-sm font-extrabold flex w-full z-100">
           Learn Tech Made&nbsp;{" "}
-          <span className="text-pink-800 z-100">
+          <span className="text-pink-800 z-100 text-sm">
             <TextTransition
               className="text-pink-800 z-10"
               springConfig={presets.wobbly}
@@ -35,7 +35,7 @@ function Header() {
           Courses
         </button>
       </div>
-      <div className="h-full ">
+      <div className="h-full md:w-1/2 ">
         <img src="./Illustration(1).png" alt="" />
       </div>
     </div>
