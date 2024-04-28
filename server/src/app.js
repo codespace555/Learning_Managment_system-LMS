@@ -2,8 +2,9 @@ import express from "express";
 import cors from "cors"
 import cookieParser from "cookie-parser";
 import morgan from 'morgan';
-const app = express();
+import passport from "passport";
 
+const app = express();
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
@@ -28,6 +29,7 @@ app.use("/api/v1/course",courseRouts)
 
 
 import TypingtestRouts from "./routes/Test.routs.js"
+import passport, { Passport } from "passport";
 
 app.use("/api/v1/typingtest",TypingtestRouts)
 
