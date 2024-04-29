@@ -18,6 +18,7 @@ const Register = React.lazy(() => import("./Pages/Register"));
 const ForgotPassword = React.lazy(() => import("./Pages/ForgotPassword"));
 const Reset = React.lazy(() => import("./Pages/Reset"));
 const Profile = React.lazy(() => import("./Pages/Profile"));
+const Aiassisant = React.lazy(() => import("./Pages/Aiassisant"));
 
 
 
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
       {
         path: "/profile",
         element:<Profile/> ,
+      },
+      {
+        path: "/yourhelper",
+        element:<Aiassisant/> ,
       },
     ],
   },

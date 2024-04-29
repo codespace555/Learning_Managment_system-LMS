@@ -43,7 +43,7 @@ function Navbar() {
     },
     {
       name: "AI Assistant",
-      link: "/about",
+      link: "/yourhelper",
       icon: <FaRobot />,
     },
   ];
