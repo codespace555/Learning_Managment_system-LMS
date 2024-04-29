@@ -21,7 +21,6 @@ function Typeing() {
       <p>Press keys on your keyboard to highlight them on the image below.</p>
      <div className="">
       <DummyKeyboard pressedKey={pressedKey} />
-
      </div>
     </div>
   );
