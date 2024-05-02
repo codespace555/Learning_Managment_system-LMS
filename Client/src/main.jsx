@@ -20,7 +20,7 @@ const Reset = React.lazy(() => import("./Pages/Reset"));
 const Profile = React.lazy(() => import("./Pages/Profile"));
 const Aiassisant = React.lazy(() => import("./Pages/Aiassisant"));
 const RoomHome = React.lazy(() => import("./Pages/RoomHome"));
-
+const Room = React.lazy(() => import("./Pages/Room"));
 
 
 const router = createBrowserRouter([
@@ -56,7 +56,10 @@ const router = createBrowserRouter([
           
         ],
       },
-
+      {
+        path: "/room/:code",
+        element: <Course />,
+      },
       {
         path: "/course",
         element: <Course />,
@@ -89,6 +92,7 @@ const router = createBrowserRouter([
         path: "/joinroom",
         element:<RoomHome/> ,
       },
+      
     ],
   },
 ]);

@@ -6,14 +6,13 @@ import { FaRobot } from "react-icons/fa6";
 import { FaKeyboard } from "react-icons/fa";
 import { LuFrame } from "react-icons/lu";
 import { FcAbout } from "react-icons/fc";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import MyProfile from "./MyProfile";
 
 function Navbar() {
   const userData = useSelector((state) => state.auth.userData);
   const authStatus = useSelector((state) => state.auth.status);
-
 
   const nav = [
     {
@@ -49,7 +48,7 @@ function Navbar() {
   ];
   return (
     <>
-      <nav className="w-screen glass">
+      <nav className="w-screen glass fixed top-0 z-50">
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col">
           {/* Navbar */}
@@ -110,6 +109,7 @@ function Navbar() {
                 )}
               </ul>
             </div>
+
             <div className="flex-none  hidden lg:block ">
               <ul className="menu menu-horizontal justify-between items-center flex px-14 bg-slate-400 dark:bg-slate-950 mt-3 rounded-xl text-sm ">
                 {/* Navbar menu content here */}
@@ -123,7 +123,17 @@ function Navbar() {
                     </Link>
                   </li>
                 ))}
+                <NavLink
+                to="/joinroom"
+                className={({ isActive }) =>
+                  `  
+                    ${isActive ? "hidden" : "block"}`
+                }
+              >
+                <img src="../download.png" alt="Download icon" className="w-14" />
+              </NavLink>
               </ul>
+              
             </div>
           </div>
         </div>
