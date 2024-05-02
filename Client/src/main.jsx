@@ -19,6 +19,7 @@ const ForgotPassword = React.lazy(() => import("./Pages/ForgotPassword"));
 const Reset = React.lazy(() => import("./Pages/Reset"));
 const Profile = React.lazy(() => import("./Pages/Profile"));
 const Aiassisant = React.lazy(() => import("./Pages/Aiassisant"));
+const RoomHome = React.lazy(() => import("./Pages/RoomHome"));
 
 
 
@@ -83,6 +84,10 @@ const router = createBrowserRouter([
       {
         path: "/yourhelper",
         element:<Aiassisant/> ,
+      },
+      {
+        path: "/joinroom",
+        element:<RoomHome/> ,
       },
     ],
   },
