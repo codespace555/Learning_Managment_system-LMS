@@ -31,15 +31,13 @@ function App() {
     <>
       <div className="bg-gray-300 w-full dark:bg-[#18202c] h-auto overflow-hidden">
         <Navbar />
-
-        
-
         <main className="h-auto mt-36">
           <Outlet />
         </main>
+
         <Footer />
-      </div>
       <ToastContainer />
+      </div>
     </>
   );
 }

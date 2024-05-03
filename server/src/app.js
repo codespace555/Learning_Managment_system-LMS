@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors"
 import cookieParser from "cookie-parser";
 import morgan from 'morgan';
-import passport from "passport";
+
 
 const app = express();
 app.use(

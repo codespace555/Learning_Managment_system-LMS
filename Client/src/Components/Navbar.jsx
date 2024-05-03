@@ -116,24 +116,33 @@ function Navbar() {
 
                 {nav.map((item, index) => (
                   <li key={index}>
-                    <Link to={`${item.link}`}>
+                    <NavLink
+                      to={`${item.link}`}
+                      className={({ isActive }) =>
+                        `  flex
+                    ${isActive ? "bg-slate-800" : ""}`
+                      }
+                    >
                       {" "}
                       {item.icon}
                       {item.name}
-                    </Link>
+                    </NavLink>
                   </li>
                 ))}
                 <NavLink
-                to="/joinroom"
-                className={({ isActive }) =>
-                  `  
+                  to="/joinroom"
+                  className={({ isActive }) =>
+                    `  
                     ${isActive ? "hidden" : "block"}`
-                }
-              >
-                <img src="../download.png" alt="Download icon" className="w-14" />
-              </NavLink>
+                  }
+                >
+                  <img
+                    src="../download.png"
+                    alt="Download icon"
+                    className="w-14"
+                  />
+                </NavLink>
               </ul>
-              
             </div>
           </div>
         </div>
@@ -143,7 +152,7 @@ function Navbar() {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="menu p-4 w-80 min-h-full bg-base-100/80 mt-20 shadow-xl gap-5">
+          <ul className="menu p-4 w-80 min-h-full bg-base-100/80 mt-20 shadow-xl gap-5 ">
             {/* Sidebar content here */}
             {nav.map((item, index) => (
               <li key={index}>
@@ -154,7 +163,15 @@ function Navbar() {
                 </Link>
               </li>
             ))}
-
+            <NavLink
+              to="/joinroom"
+              className={({ isActive }) =>
+                `  ml-5
+                    ${isActive ? "hidden" : "block"}`
+              }
+            >
+              <img src="../download.png" alt="Download icon" className="w-14" />
+            </NavLink>
             <div className=" md:hidden bg-zinc-900 items-center gap-x-3 py-[10px] px-5  w-full relative rounded-lg flex  lg:hidden">
               <svg
                 className="w-6 h-6 text-gray-650 "

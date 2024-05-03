@@ -1,4 +1,4 @@
-import React ,{Suspense, lazy} from "react";
+import React, { Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
@@ -6,38 +6,79 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store/store.js";
 import Loader from "./Components/Loader.jsx";
-import AutoLogin from "./Components/AutoLogin.jsx";
-const Home = React.lazy(() => import("./Pages/Home"));
-const Account = React.lazy(() => import("./Pages/Accoutn"));
-const Course = React.lazy(() => import("./Pages/Course"));
-const Typeing = React.lazy(() => import("./Pages/Typeing"));
-const Halloffame = React.lazy(() => import("./Pages/Halloffame"));
-const About = React.lazy(() => import("./Pages/About"));
-const Login = React.lazy(() => import("./Pages/Login"));
-const Register = React.lazy(() => import("./Pages/Register"));
-const ForgotPassword = React.lazy(() => import("./Pages/ForgotPassword"));
-const Reset = React.lazy(() => import("./Pages/Reset"));
-const Profile = React.lazy(() => import("./Pages/Profile"));
-const Aiassisant = React.lazy(() => import("./Pages/Aiassisant"));
-const RoomHome = React.lazy(() => import("./Pages/RoomHome"));
-const Room = React.lazy(() => import("./Pages/Room"));
+import AuthLayout from "./Components/AuthLayout.jsx";
+const Home = React.lazy(() => delayForDemo(import("./Pages/Home")));
+const Account = React.lazy(() => delayForDemo(import("./Pages/Accoutn")));
+const Course = React.lazy(() => delayForDemo(import("./Pages/Course")));
+const Typeing = React.lazy(() => delayForDemo(import("./Pages/Typeing")));
+const Halloffame = React.lazy(() => delayForDemo(import("./Pages/Halloffame")));
+const About = React.lazy(() => delayForDemo(import("./Pages/About")));
+const Login = React.lazy(() => delayForDemo(import("./Pages/Login")));
+const Register = React.lazy(() => delayForDemo(import("./Pages/Register")));
+const ForgotPassword = React.lazy(() => delayForDemo(import("./Pages/ForgotPassword")));
+const Reset = React.lazy(() => delayForDemo(import("./Pages/Reset")));
+const Profile = React.lazy(() => delayForDemo(import("./Pages/Profile")));
+const Aiassisant = React.lazy(() => delayForDemo(import("./Pages/Aiassisant")));
+const RoomHome = React.lazy(() => delayForDemo(import("./Pages/RoomHome")));
+const Room = React.lazy(() => delayForDemo(import("./Pages/Room")));
 
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <App/>
-      
-    ),
+    element: <App />,
     children: [
       {
         path: "/",
         element: <Home />,
       },
-
       {
-        path: "/account",
+        path: "/room/:code",
+        element:( 
+          <AuthLayout authentication={true}>
+        <Room/>
+        </AuthLayout>
+        ),
+      },
+      {
+        path: "course",
+        element: <Course />,
+      },
+      {
+        path: "typing",
+        element: <Typeing />,
+      },
+      {
+        path: "halloffame",
+        element: <Halloffame />,
+      },
+      {
+        path: "about",
+        element: <About />,
+      },
+      {
+        path: "reset-password/:resetToken",
+        element: <Reset />,
+      },
+      {
+        path: "profile",
+        element: (
+          <AuthLayout authentication={true}>
+            <Profile />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "yourhelper",
+        element: <Aiassisant />,
+      },
+      {
+        path: "joinroom",
+        element:<RoomHome/>
+         
+      },
+      {
+        path: "account",
         element: <Account />,
         children: [
           {
@@ -52,55 +93,27 @@ const router = createBrowserRouter([
             path: "forgotyourpassword",
             element: <ForgotPassword />,
           },
-          
-          
         ],
       },
-      {
-        path: "/room/:code",
-        element: <Course />,
-      },
-      {
-        path: "/course",
-        element: <Course />,
-      },
-      {
-        path: "/typing",
-        element: <Typeing />,
-      },
-      {
-        path: "/halloffame",
-        element: <Halloffame />,
-      },
-      {
-        path: "/about",
-        element: <About />,
-      },
-      {
-        path: "/reset-password/:resetToken",
-        element: <Reset />,
-      },
-      {
-        path: "/profile",
-        element:<Profile/> ,
-      },
-      {
-        path: "/yourhelper",
-        element:<Aiassisant/> ,
-      },
-      {
-        path: "/joinroom",
-        element:<RoomHome/> ,
-      },
-      
     ],
   },
 ]);
-
+function delayForDemo(promise) {
+  return new Promise(resolve => {
+    setTimeout(resolve, 2000);
+  }).then(() => promise);
+}
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <Provider store={store}>
-    <Suspense fallback={<div><Loader/></div>}>
-    <RouterProvider router={router} />
+ 
+    <Suspense
+      fallback={
+        <div>
+          <Loader />
+        </div>
+      }
+    >
+       <Provider store={store}>
+      <RouterProvider router={router} />
+      </Provider>
     </Suspense>
-  </Provider>
 );
