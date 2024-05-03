@@ -21,7 +21,11 @@ const Profile = React.lazy(() => delayForDemo(import("./Pages/Profile")));
 const Aiassisant = React.lazy(() => delayForDemo(import("./Pages/Aiassisant")));
 const RoomHome = React.lazy(() => delayForDemo(import("./Pages/RoomHome")));
 const Room = React.lazy(() => delayForDemo(import("./Pages/Room")));
-
+function delayForDemo(promise) {
+  return new Promise(resolve => {
+    setTimeout(resolve, 2000);
+  }).then(() => promise);
+}
 
 const router = createBrowserRouter([
   {
@@ -98,11 +102,7 @@ const router = createBrowserRouter([
     ],
   },
 ]);
-function delayForDemo(promise) {
-  return new Promise(resolve => {
-    setTimeout(resolve, 2000);
-  }).then(() => promise);
-}
+
 ReactDOM.createRoot(document.getElementById("root")).render(
  
     <Suspense
