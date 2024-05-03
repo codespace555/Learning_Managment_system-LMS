@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Input from "../Components/Input";
 import { useNavigate } from "react-router-dom";
 import Modal from "../Components/Modal";
 import { useSelector } from "react-redux";
+import Select from "../Components/Select";
+import courses from "../Controller/course";
 
-function JoinFunction({ handlebtnFunction, btnText,inputText }) {
+function JoinFunction({ handlebtnFunction, btnText,inputText,option }) {
     const [value, setValue] = useState("");
     const obj = {
         roomcode: value,
@@ -15,6 +17,8 @@ function JoinFunction({ handlebtnFunction, btnText,inputText }) {
                 label={inputText}
                 value={value}
                 onChange={(e) => setValue(e.target.value)} />
+
+{option && <Select label="course" option={option} />}
             <button
                 className="btn btn-outline btn-secondary w-full mt-4"
                 onClick={(e) => {
@@ -31,6 +35,19 @@ function JoinFunction({ handlebtnFunction, btnText,inputText }) {
 function RoomHome() {
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
+  const [courseTitle,setCoursetitle] = useState()
+
+  const getCourse = async() => {
+    try {
+        const allCourse = courses.getCourse()
+        console.log(allCourse)
+        if(!allCourse){
+            setCoursetitle(allCourse.data)
+        }
+    } catch (error) {
+        
+    }
+  }
 
   const joinroom = (data) => {
     console.log(data);
@@ -57,7 +74,10 @@ function RoomHome() {
                 <JoinFunction
                   btnText="Create Room"
                   handlebtnFunction={createRoom}
+                  option={courseTitle}
+
                 />
+
               </Modal>
             </>
           ) : null}

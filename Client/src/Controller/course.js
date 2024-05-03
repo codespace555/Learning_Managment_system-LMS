@@ -5,7 +5,7 @@ class course {
     getCourse =  async() => {
         try {
             const resp = await api({
-                url: "course",
+                url: "course/getallCourse",
                 method: "get",
                 headers: {
                     "content-type": "application/json",
@@ -21,3 +21,6 @@ class course {
         }
     };
     }
+
+const courses = new course()
+export default courses
