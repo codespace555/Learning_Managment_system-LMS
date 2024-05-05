@@ -29,7 +29,7 @@ app.use("/api/v1/course",courseRouts)
 
 
 import TypingtestRouts from "./routes/Test.routs.js"
-import passport, { Passport } from "passport";
+
 
 app.use("/api/v1/typingtest",TypingtestRouts)
 
