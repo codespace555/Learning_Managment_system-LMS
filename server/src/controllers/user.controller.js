@@ -8,9 +8,18 @@ import Cryptr from "cryptr";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+// const options = {
+//   httpOnly: true,
+//   secure: true, 
+// };
+
+
 const options = {
   httpOnly: true,
-  secure: true,
+  secure: true, 
+  domain: process.env.CORS_ORIGIN, 
+  path: '/', 
+  sameSite: 'None' 
 };
 
 const generateAccessAndRefreshToken = async (userId) => {
