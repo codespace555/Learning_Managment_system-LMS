@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import TextTransition, { presets } from "react-text-transition";
 const TEXTS = ["EASY", "AFFORDABLE", "PRACTICAL"];
-function Header() {
+
+const TextTransitions = memo(function (params) {
   const [index, setIndex] = React.useState(0);
   useEffect(() => {
     const intervalId = setInterval(
@@ -11,18 +12,22 @@ function Header() {
     return () => clearTimeout(intervalId);
   }, []);
   return (
+    <span className="text-pink-800 z-100 text-sm">
+      <TextTransition
+        className="text-pink-800 z-10"
+        springConfig={presets.wobbly}
+      >
+        {TEXTS[index % TEXTS.length]}
+      </TextTransition>
+    </span>
+  );
+});
+function Header() {
+  return (
     <div className="  w-full  h-screen  bg-[#18202c]  lg:flex  justify-center items-center ">
       <div className="  lg:w-1/2  p-5 flex gap-5 flex-col ">
         <h1 className="md:text-4xl text-sm font-extrabold flex w-full z-100">
-          Learn Tech Made&nbsp;{" "}
-          <span className="text-pink-800 z-100 text-sm">
-            <TextTransition
-              className="text-pink-800 z-10"
-              springConfig={presets.wobbly}
-            >
-              {TEXTS[index % TEXTS.length]}
-            </TextTransition>
-          </span>{" "}
+          Learn Tech Made&nbsp; <TextTransitions />
         </h1>
         <p className=" my-2 pr-10 ">
           LearnIfytech is the one-stop destination for your upskilling journey.

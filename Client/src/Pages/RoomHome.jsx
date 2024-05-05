@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState ,memo} from "react";
 import Input from "../Components/Input";
 import { useNavigate } from "react-router-dom";
 import Modal from "../Components/Modal";
@@ -6,48 +6,56 @@ import { useSelector } from "react-redux";
 import Select from "../Components/Select";
 import courses from "../Controller/course";
 
-function JoinFunction({ handlebtnFunction, btnText,inputText,option }) {
-    const [value, setValue] = useState("");
-    const obj = {
-        roomcode: value,
-    };
-    return (
-        <>
-            <Input
-                label={inputText}
-                value={value}
-                onChange={(e) => setValue(e.target.value)} />
+const Joinbtn = memo(function ({obj,btnText,handlebtnFunction}){
 
-{option && <Select label="course" option={option} />}
-            <button
-                className="btn btn-outline btn-secondary w-full mt-4"
-                onClick={(e) => {
-                    e.preventDefault();
-                    handlebtnFunction(obj);
-                } }
-            >
-                {btnText}
-            </button>
+  return(
+    <>
+          <button
+            className="btn btn-outline btn-secondary w-full mt-4"
+            onClick={(e) => {
+              e.preventDefault();
+              handlebtnFunction(obj);
+            }}
+          >
+            {btnText}
+          </button>
         </>
-    );
+  )
+
+})
+
+function JoinFunction({ handlebtnFunction, btnText, inputText, option }) {
+  const [value, setValue] = useState("");
+  const obj = {
+    roomcode: value,
+  };
+  return (
+    <>
+      <Input
+        label={inputText}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      />
+          {/* {option && <Select label="course" option={option} />} */}
+     <Joinbtn obj= {obj} handlebtnFunction={handlebtnFunction} btnText={btnText}/>
+    </>
+  );
 }
 
 function RoomHome() {
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
-  const [courseTitle,setCoursetitle] = useState()
+  const [courseTitle, setCoursetitle] = useState();
 
-  const getCourse = async() => {
+  const getCourse = async () => {
     try {
-        const allCourse = courses.getCourse()
-        console.log(allCourse)
-        if(!allCourse){
-            setCoursetitle(allCourse.data)
-        }
-    } catch (error) {
-        
-    }
-  }
+      const allCourse = courses.getCourse();
+      console.log(allCourse);
+      if (!allCourse) {
+        setCoursetitle(allCourse.data);
+      }
+    } catch (error) {}
+  };
 
   const joinroom = (data) => {
     console.log(data);
@@ -65,7 +73,11 @@ function RoomHome() {
           alt=""
         />
         <div className="p-10 w-full ">
-          <JoinFunction inputText="Enter Room Code" btnText="Join Room" handlebtnFunction={joinroom} />
+          <JoinFunction
+            inputText="Enter Room Code"
+            btnText="Join Room"
+            handlebtnFunction={joinroom}
+          />
           {userData && userData?.data?.role === "ADMIN" ? (
             <>
               <h2 className="text-center my-5">or</h2>
@@ -75,9 +87,7 @@ function RoomHome() {
                   btnText="Create Room"
                   handlebtnFunction={createRoom}
                   option={courseTitle}
-
                 />
-
               </Modal>
             </>
           ) : null}
