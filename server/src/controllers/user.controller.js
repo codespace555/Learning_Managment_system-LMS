@@ -17,8 +17,6 @@ import jwt from "jsonwebtoken";
 const options = {
   httpOnly: true,
   secure: true, 
-  domain: process.env.CORS_ORIGIN, 
-  path: '/', 
   sameSite: 'None' 
 };
 
