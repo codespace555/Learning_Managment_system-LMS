@@ -37,6 +37,7 @@ function Register() {
         if (user) {
           dispatch(login(user));
           navigate("/");
+          setIsPending(false);
         }
       }
       console.log(response?.data);
