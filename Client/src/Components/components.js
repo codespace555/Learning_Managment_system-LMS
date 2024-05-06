@@ -5,5 +5,6 @@ import Input from "./Input"
 import OAuthbtn from "./OAuthbtn"
 import LeaderBoard from "./LeaderBoard"
 import Modal from "./Modal"
-
-export {Navbar, Footer, Header,Input ,OAuthbtn,LeaderBoard,Modal}
+import Button from "./Button"
+import Select from "./Select"
+export {Navbar, Footer, Header,Input ,OAuthbtn,LeaderBoard,Modal,Button,Select}

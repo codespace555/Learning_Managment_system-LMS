@@ -6,11 +6,11 @@ import { useSelector } from "react-redux";
 import Select from "../Components/Select";
 import courses from "../Controller/course";
 
-const Joinbtn = memo(function ({obj,btnText,handlebtnFunction}){
+const Joinbtn = function ({obj,btnText,handlebtnFunction}){
 
   return(
     <>
-          <button
+      { obj.roomcode && <button
             className="btn btn-outline btn-secondary w-full mt-4"
             onClick={(e) => {
               e.preventDefault();
@@ -19,12 +19,13 @@ const Joinbtn = memo(function ({obj,btnText,handlebtnFunction}){
           >
             {btnText}
           </button>
+}
         </>
   )
 
-})
+}
 
-function JoinFunction({ handlebtnFunction, btnText, inputText, option }) {
+const JoinFunction = memo(function({ handlebtnFunction, btnText, inputText, option }) {
   const [value, setValue] = useState("");
   const obj = {
     roomcode: value,
@@ -34,13 +35,14 @@ function JoinFunction({ handlebtnFunction, btnText, inputText, option }) {
       <Input
         label={inputText}
         value={value}
+        required
         onChange={(e) => setValue(e.target.value)}
       />
           {/* {option && <Select label="course" option={option} />} */}
      <Joinbtn obj= {obj} handlebtnFunction={handlebtnFunction} btnText={btnText}/>
     </>
   );
-}
+})
 
 function RoomHome() {
   const navigate = useNavigate();

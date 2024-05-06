@@ -7,6 +7,7 @@ import authUser from "../Controller/User.js";
 import Logo from "../Components/Logo.jsx";
 import { useDispatch } from "react-redux";
 import { login } from "../store/authSlice.js";
+import Button from "../Components/Button.jsx";
 // import { Input, OAuthbtn } from "../Components/components.js";
 
 const Input = lazy(() => import("../Components/Input"));
@@ -17,31 +18,34 @@ function Register() {
   const navigate = useNavigate();
   const [isPending, setIsPending] = useState(false);
   const dispatch = useDispatch();
+  const [passwordshow, setPassWordshow] = useState(false);
 
   const onSubmit = async (data) => {
     console.log(data);
+
     try {
+      if (data.password.length < 8) {
+        return toast.error("Password must be at least 8 characters long");
+      }
       setIsPending(true);
       const formData = new FormData();
       formData.append("fullName", data.fullName);
       formData.append("email", data.email);
       formData.append("password", data.password);
       formData.append("avatar", data.avatar[0]);
-
       const response = await authUser.createUser(formData);
 
       if (response) {
-        toast.success(`Welcome back ${response?.data.user.fullName}`);
         const user = await authUser.getUser();
         console.log(user);
         if (user) {
           dispatch(login(user));
           navigate("/");
           setIsPending(false);
+          toast.success(response?.message);
         }
       }
       console.log(response?.data);
-      toast.success(response?.message);
     } catch (error) {
       toast.error(error);
     } finally {
@@ -50,7 +54,7 @@ function Register() {
   };
 
   return (
-    <div>
+    <div className="mt-5">
       <>
         <div
           className={`max-w-lg w-full rounded-lg p-10 border bg-slate-800/80 border-black/10 `}
@@ -124,6 +128,7 @@ function Register() {
                       {...register("password", { required: true })}
                     />
                   </Suspense>
+                  {/* <span className="bg-gray-200" onClick={() => setPassWordshow(true)}>👁️</span> */}
                 </div>
               </div>
             </div>
@@ -131,10 +136,11 @@ function Register() {
               className="btn btn-outline btn-secondary flex-none w-full  lg:block mt-5"
               disabled={isPending} // Disable button when pending state is true
             >
-              {isPending ? "Registering..." : "Register"}
+              Register
             </button>
           </form>
         </div>
+        <Button isPending={isPending} />
       </>
     </div>
   );
