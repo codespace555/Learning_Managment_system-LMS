@@ -13,19 +13,19 @@ function App() {
   const navigate = useNavigate();
   const authStatus = useSelector((state) => state.auth.status);
 
-  useEffect(() => {
-    authUser.getUser().then((user) => {
-      if (!authStatus) {
-        if (user) {
-          dispatch(login(user));
-          console.log(user);
-        } else {
-          navigate("/login");
-          toast.status("Please Login");
-        }
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   authUser.getUser().then((user) => {
+  //     if (!authStatus) {
+  //       if (user) {
+  //         dispatch(login(user));
+  //         console.log(user);
+  //       } else {
+  //         navigate("/login");
+  //         toast.status("Please Login");
+  //       }
+  //     }
+  //   });
+  // }, []);
 
   return (
     <>
@@ -35,7 +35,7 @@ function App() {
           <Outlet />
         </main>
 
-        {/* <Footer /> */}
+        <Footer />
       <ToastContainer />
       </div>
     </>

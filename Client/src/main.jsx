@@ -15,14 +15,16 @@ const Halloffame = React.lazy(() => delayForDemo(import("./Pages/Halloffame")));
 const About = React.lazy(() => delayForDemo(import("./Pages/About")));
 const Login = React.lazy(() => delayForDemo(import("./Pages/Login")));
 const Register = React.lazy(() => delayForDemo(import("./Pages/Register")));
-const ForgotPassword = React.lazy(() => delayForDemo(import("./Pages/ForgotPassword")));
+const ForgotPassword = React.lazy(() =>
+  delayForDemo(import("./Pages/ForgotPassword"))
+);
 const Reset = React.lazy(() => delayForDemo(import("./Pages/Reset")));
 const Profile = React.lazy(() => delayForDemo(import("./Pages/Profile")));
 const Aiassisant = React.lazy(() => delayForDemo(import("./Pages/Aiassisant")));
 const RoomHome = React.lazy(() => delayForDemo(import("./Pages/RoomHome")));
 const Room = React.lazy(() => delayForDemo(import("./Pages/Room")));
 function delayForDemo(promise) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(resolve, 2000);
   }).then(() => promise);
 }
@@ -38,10 +40,10 @@ const router = createBrowserRouter([
       },
       {
         path: "/room/:code",
-        element:( 
+        element: (
           <AuthLayout authentication={true}>
-        <Room/>
-        </AuthLayout>
+            <Room />
+          </AuthLayout>
         ),
       },
       {
@@ -78,8 +80,7 @@ const router = createBrowserRouter([
       },
       {
         path: "joinroom",
-        element:<RoomHome/>
-         
+        element: <RoomHome />,
       },
       {
         path: "account",
@@ -104,17 +105,15 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <Suspense
-      fallback={
-        <div>
-          <Loader />
-        </div>
-      }
-    >
-       <Provider store={store}>
+  <Suspense
+    fallback={
+      <div>
+        <Loader />
+      </div>
+    }
+  >
+    <Provider store={store}>
       <RouterProvider router={router} />
-      </Provider>
-    </Suspense>
-    </StrictMode>
+    </Provider>
+  </Suspense>
 );
