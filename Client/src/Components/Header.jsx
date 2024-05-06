@@ -25,7 +25,7 @@ const TextTransitions = memo(function (params) {
 function Header() {
   return (
     <div className="  w-full  h-screen  bg-[#18202c]  lg:flex  justify-center items-center ">
-      <div className="  lg:w-1/2  p-5 flex gap-5 flex-col ">
+      <div className="  lg:w-1/2  p-5 flex gap-5 flex-col text-gray-400">
         <h1 className="md:text-4xl text-sm font-extrabold flex w-full z-100">
           Learn Tech Made&nbsp; <TextTransitions />
         </h1>
@@ -36,7 +36,7 @@ function Header() {
           get the highest quality course content at the most affordable prices!
         </p>
         <p className="my-5">What are we waiting for ? Let's push Start!</p>
-        <button className="opacity-100  text-white text-sm medium:text-base medium:px-6 medium:py-3 font-semibold rounded-md flex gap-2 justify-center items-center font-nunitoSans cursor-pointer mx-auto large:!mx-0 w-full px-[88px] py-[13px] large:!px-12 large:!py-3 bg-pink-900 hover:bg-pink-800">
+        <button className="opacity-100  dark:text-white text-sm medium:text-base medium:px-6 medium:py-3 font-semibold rounded-md flex gap-2 justify-center items-center font-nunitoSans cursor-pointer mx-auto large:!mx-0 w-full px-[88px] py-[13px] large:!px-12 large:!py-3 bg-pink-900 hover:bg-pink-800">
           Courses
         </button>
       </div>

@@ -31,6 +31,13 @@ function Login() {
       toast.error(error);
     }
   };
+  const loginWithDemoAccount = () => {
+    const data = {
+      email: "help.subbazzar@gmail.com",
+      password: "7050553648",
+    }
+    handelSumbit(data)
+  }
   return (
     <>
       <div
@@ -53,7 +60,7 @@ function Login() {
         </p>
 
         <OAuthbtn icon={<FcGoogle />} oauth="Login With Google" />
-        <OAuthbtn icon={<MdEmojiPeople />} oauth="Login With Demo Account" />
+        <OAuthbtn singupWithoauth={loginWithDemoAccount} icon={<MdEmojiPeople />} oauth="Login With Demo Account" />
 
         <h1 className="mt-2 text-center text-base text-gray-200">or</h1>
         <form onSubmit={handleSubmit(handelSumbit)} className="mt-8">

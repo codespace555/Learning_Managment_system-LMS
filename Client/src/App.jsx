@@ -29,9 +29,9 @@ function App() {
 
   return (
     <>
-      <div className="bg-gray-300 w-full dark:bg-[#18202c] h-auto overflow-hidden">
+      <div className=" w-full bg-[#18202c] h-auto text-gray-400 overflow-hidden">
         <Navbar />
-        <main className="h-auto mt-36">
+        <main className="h-auto mt-36 bg-[#18202c]">
           <Outlet />
         </main>
 

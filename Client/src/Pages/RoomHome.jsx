@@ -67,7 +67,7 @@ function RoomHome() {
     console.log(data);
   };
   return (
-    <div className=" h-screen flex items-center justify-center  ">
+    <div className=" md:h-screen flex items-center justify-center  ">
       <div className=" w-ful m-5  rounded-lg md:flex bg-slate-950 items-center justify-between ">
         <img
           className="lg:w-1/2 md:w-1/2 glass rounded-lg "

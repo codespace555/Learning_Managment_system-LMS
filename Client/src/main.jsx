@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from "react";
+import React, { StrictMode, Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
@@ -104,7 +104,7 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
- 
+  <StrictMode>
     <Suspense
       fallback={
         <div>
@@ -116,4 +116,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <RouterProvider router={router} />
       </Provider>
     </Suspense>
+    </StrictMode>
 );

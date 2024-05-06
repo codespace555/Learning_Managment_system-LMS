@@ -48,12 +48,12 @@ function Navbar() {
   ];
   return (
     <>
-      <nav className="w-screen glass fixed top-0 z-50">
+      <nav className="w-screen glass fixed top-0 z-50 dark:text-gray-400">
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col">
           {/* Navbar */}
           <div className="w-full navbarsticky top-0 z-50 backdrop-blur p-5 transition-colors duration-500 lg:z-50 lg:border-b lg:border-slate-900/10 dark:border-slate-50/[0.06] bg-gray-500 supports-backdrop-blur:bg-white/95 dark:bg-slate-900/75 justify-center items-center ">
-            <div className="flex justify-between items-center w-full gap-x-5">
+            <div className="flex justify-around items-center w-full gap-x-4 align-middle">
               <div className="flex-none lg:hidden">
                 <label
                   htmlFor="my-drawer-3"
@@ -79,7 +79,7 @@ function Navbar() {
                 <Logo />
               </div>
 
-              <div className=" md:flex bg-zinc-900 items-center gap-x-5 py-[10px] px-5  w-[70%] relative rounded-lg hidden lg:flex ">
+              <div className=" md:flex bg-zinc-900 items-center  py-[10px] px-5  w-[70%] relative rounded-lg hidden lg:flex ">
                 <svg
                   className="w-6 h-6 text-gray-650 "
                   viewBox="0 0 512 512"

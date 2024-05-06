@@ -3,7 +3,7 @@ import { RotatingSquare } from "react-loader-spinner";
 function Loader() {
   return (
     <>
-      <div className="loader flex w-full h-screen  items-center justify-center">
+      <div className="loader flex w-full h-screen  items-center justify-center bg-[#18202c]">
         <RotatingSquare
           visible={true}
           height="100"

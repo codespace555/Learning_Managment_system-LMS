@@ -10,8 +10,9 @@ function Course() {
   }
   
   return (
-    <div>
+    <div className='text-black'>
       <button onClick={handel}>getUser</button>
+      ferfrefre
     </div>
   )
 }
