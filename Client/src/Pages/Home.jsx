@@ -1,6 +1,6 @@
 import React from 'react'
-import Header from '../Components/Header'
-import ScrollHome from '../Components/ScrollHome'
+import {Header} from "../Components/components"
+
 
 function Home() {
   return (
